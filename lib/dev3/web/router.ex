@@ -17,11 +17,12 @@ defmodule Dev3.Web.Router do
     pipe_through :api
 
     scope "/github" do
-      get "/oauth_access", GithubAuthenticationController, :oauth_access
+      get "/authorize", GithubAuthorizationController, :authorize
+      get "/oauth_access", GithubAuthorizationController, :oauth_access
     end
 
     scope "/slack" do
-      get "/oauth_access", SlackAuthenticationController, :oauth_access
+      get "/oauth_access", SlackAuthorizationController, :oauth_access
     end
   end
 

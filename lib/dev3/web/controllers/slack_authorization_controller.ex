@@ -1,11 +1,11 @@
-defmodule Dev3.Web.SlackAuthenticationController do
+defmodule Dev3.Web.SlackAuthorizationController do
   use Dev3.Web, :controller
 
   require Logger
 
-  @slack_fields ~w(access_token user_id team_id bot)
+  @saved_fields ~w(access_token user_id team_id bot)
   @bot_fields ~w(bot_access_token bot_user_id)
-  @slack_oauth_access_url ~s(https://slack.com/api/oauth.access?)
+  @oauth_access_url ~s(https://slack.com/api/oauth.access)
 
   action_fallback Dev3.Web.FallbackController
 
@@ -18,14 +18,14 @@ defmodule Dev3.Web.SlackAuthenticationController do
 
     with %{status_code: 200, body: body} <- request_access(access_params),
          {:ok, %{"ok" => true} = parsed_body} <- handle_json(body),
-         data <- Map.take(parsed_body, @slack_fields) do
+         data <- Map.take(parsed_body, @saved_fields) do
            Logger.debug("User info : #{inspect data}")
-           redirect conn, to: github_authentication_path(conn, :oauth_access) 
+           redirect conn, to: github_authorization_path(conn, :authorize)
          end
   end
 
   defp request_access(params) do
-    HTTPoison.get!(@slack_oauth_access_url <> format_for_url(params))
+    HTTPoison.get!(@oauth_access_url <> "?" <> format_for_url(params))
   end
 
   defp handle_json(json) do

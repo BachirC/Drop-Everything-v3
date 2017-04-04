@@ -25,7 +25,9 @@ config :logger, :console,
 # Configures Slack
 config :dev3,
   slack_client_id: System.get_env("SLACK_CLIENT_ID"),
-  slack_client_secret: System.get_env("SLACK_CLIENT_SECRET")
+  slack_client_secret: System.get_env("SLACK_CLIENT_SECRET"),
+  github_client_id: System.get_env("GITHUB_CLIENT_ID"),
+  github_client_secret: System.get_env("GITHUB_CLIENT_SECRET")
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
