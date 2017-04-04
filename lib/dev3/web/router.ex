@@ -13,17 +13,14 @@ defmodule Dev3.Web.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/auth", Dev3.Web do
+    pipe_through :browser
+
+    get "/:provider", AuthController, :index
+    get "/:provider/callback", AuthController, :callback
+  end
   scope "/api", Dev3.Web do
     pipe_through :api
-
-    scope "/github" do
-      get "/authorize", GithubAuthorizationController, :authorize
-      get "/oauth_access", GithubAuthorizationController, :oauth_access
-    end
-
-    scope "/slack" do
-      get "/oauth_access", SlackAuthorizationController, :oauth_access
-    end
   end
 
   scope "/", Dev3.Web do

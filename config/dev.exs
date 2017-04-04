@@ -56,3 +56,15 @@ config :dev3, Dev3.Repo,
   database: "dev3_dev",
   hostname: "localhost",
   pool_size: 10
+
+config :dev3, Slack,
+  client_id: System.get_env("SLACK_CLIENT_ID"),
+  client_secret: System.get_env("SLACK_CLIENT_SECRET")
+
+config :dev3, GitHub,
+  client_id: System.get_env("GITHUB_CLIENT_ID"),
+  client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
+  redirect_uri: System.get_env("GITHUB_REDIRECT_URI"),
+  scope: System.get_env("GITHUB_SCOPE")
+
+config :oauth2, debug: true
