@@ -51,8 +51,8 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :dev3, Dev3.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  username: "BachirC",
+  password: "",
   database: "dev3_dev",
   hostname: "localhost",
   pool_size: 10
@@ -64,7 +64,6 @@ config :dev3, Slack,
 config :dev3, GitHub,
   client_id: System.get_env("GITHUB_CLIENT_ID"),
   client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
-  redirect_uri: System.get_env("GITHUB_REDIRECT_URI"),
   scope: System.get_env("GITHUB_SCOPE")
 
 config :oauth2, debug: true

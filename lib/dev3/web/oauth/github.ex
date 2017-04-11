@@ -6,6 +6,9 @@ defmodule GitHub do
 
   alias OAuth2.Strategy.AuthCode
 
+  @doc"""
+    Configures the Github client parameters.
+  """
   defp config do
     [strategy: __MODULE__,
      site: "https://api.github.com",
@@ -15,23 +18,38 @@ defmodule GitHub do
 
   # Public API
 
+  @doc"""
+    OAuth client for Github.
+  """
   def client do
     Application.get_env(:dev3, GitHub)
     |> Keyword.merge(config())
     |> OAuth2.Client.new()
   end
 
+  @doc"""
+    Initiates the request to /oauth/authorize that redirects to the callback URL.
+  """
   def authorize_url!(params \\ []) do
     OAuth2.Client.authorize_url!(client(), Keyword.merge(params, scope: Application.get_env(:dev3, GitHub)[:scope]))
   end
 
+  @doc"""
+    Initiates the request to /oauth/access_token to retrieve the token for the user.
+  """
   def get_token!(params \\ [], headers \\ []) do
     OAuth2.Client.get_token!(client(), Keyword.merge(params, client_secret: client().client_secret))
   end
 
-  def get_user!(client, token) do
-    %{body: user} = OAuth2.Client.get!(client, "/user")
+  @doc"""
+    Gets github user info.
+  """
+  def get_user!(client) do
+    %{token: %{access_token: token}} = client
+    %{body: %{"login" => user_id}} = OAuth2.Client.get!(client, "/user")
+    %{access_token: token, user_id: user_id}
   end
+
   # Strategy Callbacks
 
   def authorize_url(client, params) do

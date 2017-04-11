@@ -6,8 +6,9 @@ defmodule Slack do
 
   alias OAuth2.Strategy.AuthCode
 
-  require Logger
-
+  @doc"""
+    Configures the Github client parameters.
+  """
   defp config do
     [strategy: __MODULE__,
      site: "https://api.slack.com",
@@ -17,25 +18,23 @@ defmodule Slack do
 
   # Public API
 
+  @doc"""
+    OAuth client for Github.
+  """
   def client do
     Application.get_env(:dev3, Slack)
     |> Keyword.merge(config())
     |> OAuth2.Client.new()
   end
 
-  def authorize_url!(params \\ []) do
-    OAuth2.Client.authorize_url!(client(), params)
-  end
-
+  @doc"""
+    Initiates the request to /oauth/oauth.acess to retrieve the token for the user.
+  """
   def get_token!(params \\ [], headers \\ []) do
     OAuth2.Client.get_token!(client(), Keyword.merge(params, client_secret: client().client_secret))
   end
 
   # Strategy Callbacks
-
-  def authorize_url(client, params) do
-    AuthCode.authorize_url(client, params)
-  end
 
   def get_token(client, params, headers) do
     client
