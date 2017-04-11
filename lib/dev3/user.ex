@@ -27,7 +27,7 @@ defmodule Dev3.User do
   end
 
   @doc """
-    Creates a new user Slack info if no matching {:slack_team_id, :slack_user_id} exists,
+    Creates a new user with Slack info if no matching {:slack_team_id, :slack_user_id} exists,
     or updates the access_token otherwise.
   """
   def insert_or_update(params) do

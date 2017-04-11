@@ -14,8 +14,8 @@ defmodule Dev3.SlackBot do
   end
 
   @doc """
-    Creates a new slack bot for the Slack team if none exists, or updates the slack_access_token
-    if it already exists.
+    Creates a new slack bot for the Slack team if none exists, or updates the access_token
+    otherwise
   """
   def insert_or_update(params) do
     case Repo.get_by(__MODULE__, Map.take(params, [:slack_team_id])) do
