@@ -2,12 +2,7 @@ defmodule Dev3.Web.AuthController do
   use Dev3.Web, :controller
 
   alias Dev3.User
-  import User
   alias Dev3.SlackBot
-  import SlackBot
-
-  alias Dev3.Repo
-  import Repo
 
   action_fallback Dev3.Web.AuthFallbackController
 
@@ -29,7 +24,7 @@ defmodule Dev3.Web.AuthController do
   defp authorize_url!(conn, %{"provider" => "slack"}), do: redirect conn, to: "/dev3.html"
   defp authorize_url!(conn, %{"provider" => "github", "user_id" => user_id}), do:
     redirect conn, external: GitHub.authorize_url!(state: user_id)
-  defp authorize_url!(_), do: raise "Authorize : No matching provider available"
+  defp authorize_url!(_, _), do: raise "Authorize : No matching provider available"
 
   defp handle_callback(conn, %{"provider" => "slack", "code" => code}) do
     with %{token: %{other_params: %{"ok" => true}} = oauth_params} <- Slack.get_token!(code: code),
