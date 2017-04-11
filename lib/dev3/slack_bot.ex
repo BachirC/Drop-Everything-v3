@@ -2,10 +2,8 @@ defmodule Dev3.SlackBot do
   use Ecto.Schema
 
   import Ecto.Changeset
-  alias Dev3.Repo
-  import Repo
 
-  alias Dev3.SlackBot
+  alias Dev3.Repo
 
   schema "slack_bots" do
     field :slack_access_token, :string
@@ -20,7 +18,7 @@ defmodule Dev3.SlackBot do
     if it already exists.
   """
   def insert_or_update(params) do
-    case Repo.get_by(SlackBot, Map.take(params, [:slack_team_id])) do
+    case Repo.get_by(__MODULE__, Map.take(params, [:slack_team_id])) do
        nil ->  create_changeset(%__MODULE__{}, params)
        user -> update_changeset(user, params)
      end
@@ -30,14 +28,14 @@ defmodule Dev3.SlackBot do
 #======= Changeset ========#
 
   @create_fields ~w(slack_user_id slack_team_id slack_access_token)a
-  defp create_changeset(slack_bot, params \\ %{}) do
+  defp create_changeset(slack_bot, params) do
     slack_bot
     |> cast(params, @create_fields)
     |> validate_required(@create_fields)
   end
 
   @update_fields ~w(slack_access_token)a
-  defp update_changeset(slack_bot, params \\ %{}) do
+  defp update_changeset(slack_bot, params) do
     slack_bot
     |> cast(params, @update_fields)
     |> validate_required(@update_fields)

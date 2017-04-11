@@ -6,9 +6,6 @@ defmodule GitHub do
 
   alias OAuth2.Strategy.AuthCode
 
-  @doc"""
-    Configures the Github client parameters.
-  """
   defp config do
     [strategy: __MODULE__,
      site: "https://api.github.com",
@@ -37,7 +34,7 @@ defmodule GitHub do
   @doc"""
     Initiates the request to /oauth/access_token to retrieve the token for the user.
   """
-  def get_token!(params \\ [], headers \\ []) do
+  def get_token!(params \\ [], _headers) do
     OAuth2.Client.get_token!(client(), Keyword.merge(params, client_secret: client().client_secret))
   end
 

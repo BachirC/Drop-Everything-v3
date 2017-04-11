@@ -2,10 +2,8 @@ defmodule Dev3.User do
   use Ecto.Schema
 
   import Ecto.Changeset
-  alias Dev3.Repo
-  import Repo
 
-  alias Dev3.User
+  alias Dev3.Repo
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "users" do
@@ -49,7 +47,6 @@ defmodule Dev3.User do
     |> validate_required(@create_fields)
   end
 
-  defp update_changeset(provider, user, params \\ %{})
   defp update_changeset("slack", user, params) do
     update_fields = ~w(slack_access_token)a
     user
