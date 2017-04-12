@@ -27,7 +27,7 @@ defmodule Slack do
   @doc"""
     Initiates the request to /oauth/oauth.acess to retrieve the token for the user.
   """
-  def get_token!(params \\ [], _headers) do
+  def get_token!(params \\ [], headers \\ []) do
     OAuth2.Client.get_token!(client(), Keyword.merge(params, client_secret: client().client_secret))
   end
 
