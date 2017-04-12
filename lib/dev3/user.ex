@@ -41,7 +41,7 @@ defmodule Dev3.User do
 #============== Changesets ===============#
 
   @create_fields ~w(slack_user_id slack_team_id slack_access_token)a
-  defp create_changeset(user, params \\ %{}) do
+  defp create_changeset(user, params) do
     user
     |> cast(params, @create_fields)
     |> validate_required(@create_fields)

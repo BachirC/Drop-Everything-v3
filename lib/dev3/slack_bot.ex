@@ -19,10 +19,10 @@ defmodule Dev3.SlackBot do
   """
   def insert_or_update(params) do
     case Repo.get_by(__MODULE__, Map.take(params, [:slack_team_id])) do
-       nil ->  create_changeset(%__MODULE__{}, params)
-       user -> update_changeset(user, params)
-     end
-     |> Repo.insert_or_update
+      nil ->  create_changeset(%__MODULE__{}, params)
+      user -> update_changeset(user, params)
+    end
+    |> Repo.insert_or_update
   end
 
 #======= Changeset ========#
