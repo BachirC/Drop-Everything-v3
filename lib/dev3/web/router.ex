@@ -19,8 +19,17 @@ defmodule Dev3.Web.Router do
     get "/:provider", AuthController, :index
     get "/:provider/callback", AuthController, :callback
   end
-  scope "/api", Dev3.Web do
+  scope "/api", Dev3.Web.API do
     pipe_through :api
+
+    scope "/github" do
+    end
+
+    scope "/slack", Slack do
+      scope "/slash_commands" do
+        post "/watchrepos", SlashCommandsController, :watch_repos
+      end
+    end
   end
 
   scope "/", Dev3.Web do
