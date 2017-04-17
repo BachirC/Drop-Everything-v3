@@ -59,7 +59,8 @@ config :dev3, Dev3.Repo,
 
 config :dev3, Slack,
   client_id: System.get_env("SLACK_CLIENT_ID"),
-  client_secret: System.get_env("SLACK_CLIENT_SECRET")
+  client_secret: System.get_env("SLACK_CLIENT_SECRET"),
+  verification_token: System.get_env("SLACK_VERIFICATION_TOKEN")
 
 config :dev3, GitHub,
   client_id: System.get_env("GITHUB_CLIENT_ID"),

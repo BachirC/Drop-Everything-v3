@@ -31,11 +31,15 @@ defmodule Dev3.User do
     or updates the access_token otherwise.
   """
   def insert_or_update(params) do
-     case Repo.get_by(__MODULE__, Map.take(params, [:slack_user_id, :slack_team_id])) do
+     case retrieve_with_slack(params) do
        nil ->  create_changeset(%__MODULE__{}, params)
        user -> update_changeset("slack", user, params)
      end
      |> Repo.insert_or_update
+  end
+
+  def retrieve_with_slack(params) do
+    Repo.get_by(__MODULE__, Map.take(params, [:slack_user_id, :slack_team_id]))
   end
 
 #============== Changesets ===============#

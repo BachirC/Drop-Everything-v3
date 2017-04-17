@@ -25,7 +25,7 @@ defmodule Dev3.SlackBot do
     |> Repo.insert_or_update
   end
 
-#======= Changeset ========#
+#======= Changesets ========#
 
   @create_fields ~w(slack_user_id slack_team_id slack_access_token)a
   defp create_changeset(slack_bot, params) do
