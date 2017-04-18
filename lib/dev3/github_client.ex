@@ -1,5 +1,4 @@
 defmodule Dev3.GitHubClient do
-  require Logger
 
   def watch_repos(%{github_access_token: access_token} = user, repos) do
     client = Tentacat.Client.new(%{access_token: access_token})
@@ -9,7 +8,6 @@ defmodule Dev3.GitHubClient do
     repos_status = Enum.map(user_repos, &create_webhook(client, &1))
                    |> Enum.group_by(&List.first/1, &List.last/1)
                    |> Map.put(:not_found, repos -- user_repos_full_names)
-    Logger.warn("Repos : #{inspect repos_status}")
     {:ok, repos_status}
   end
 
@@ -17,6 +15,7 @@ defmodule Dev3.GitHubClient do
     Tentacat.Repositories.list_mine(client)
     |> Enum.filter_map(fn repo -> Enum.member?(repos, repo["full_name"]) end,
                        fn repo -> %{full_name: repo["full_name"],
+                                    github_id: repo["id"],
                                     name: repo["name"],
                                     owner: repo["owner"]["login"]} end)
   end
@@ -42,10 +41,10 @@ defmodule Dev3.GitHubClient do
     already_exists_error_msg = ~s(Hook already exists on this repository)
 
     case response do
-      {201, _} -> [:created, repo.full_name]
-      {422, %{"errors" => [%{"message" => already_exists_error_msg}]}} -> [:noop, repo.full_name]
-      {404, _} -> [:permission_error, repo.full_name]
-      {_} -> [:unknown_error, repo.full_name]
+      {201, _} -> [:created, repo]
+      {422, %{"errors" => [%{"message" => already_exists_error_msg}]}} -> [:noop, repo]
+      {404, _} -> [:permission_error, repo]
+      {_} -> [:unknown_error, repo]
     end
   end
 end

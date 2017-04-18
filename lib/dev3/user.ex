@@ -1,8 +1,6 @@
 defmodule Dev3.User do
   use Ecto.Schema
-
   import Ecto.Changeset
-
   alias Dev3.Repo
 
   @primary_key {:id, :binary_id, autogenerate: true}

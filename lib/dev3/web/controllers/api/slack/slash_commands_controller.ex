@@ -5,6 +5,8 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
 
   alias Dev3.User
 
+  alias Dev3.GitHub.WatchedRepo
+
   action_fallback Dev3.Web.API.Slack.SlashCommandsFallbackController
 
   def watch_repos(conn, %{"text" => args, "token" => verification_token} = params) do
@@ -12,8 +14,16 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
          {:ok, repos} <- parse(args),
          user <- User.retrieve_with_slack(to_user_fields(params)),
          {:ok, repos_status} <- GitHubClient.watch_repos(user, repos) do
+           Enum.each(repos_to_watch(repos_status), &WatchedRepo.create(user, &1))
            send_resp(conn, 200, "")
     end
+  end
+
+  defp repos_to_watch(repos) do
+    repos
+    |> Map.take([:created, :noop])
+    |> Map.values()
+    |> List.flatten()
   end
 
   defp verify_token(token) do
