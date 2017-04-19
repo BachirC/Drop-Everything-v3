@@ -29,6 +29,7 @@ defmodule Dev3.Web.Router do
     scope "/slack", Slack do
       scope "/slash_commands" do
         post "/watchrepos", SlashCommandsController, :watch_repos
+        post "/unwatchrepos", SlashCommandsController, :unwatch_repos
       end
     end
   end

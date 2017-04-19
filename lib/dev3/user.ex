@@ -11,6 +11,7 @@ defmodule Dev3.User do
     field :slack_team_id, :string
     field :slack_user_id, :string
 
+    has_many :watched_repos, Dev3.GitHub.WatchedRepo
     timestamps()
   end
 

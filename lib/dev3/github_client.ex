@@ -1,8 +1,11 @@
 defmodule Dev3.GitHubClient do
 
-  def watch_repos(%{github_access_token: access_token} = user, repos) do
+  @doc"""
+    Create GitHub webhooks for the given repos.
+  """
+  def create_webhooks(%{github_access_token: access_token} = user, repos) do
     client = Tentacat.Client.new(%{access_token: access_token})
-    user_repos = retrieve_user_repos(client, repos)
+    user_repos = retrieve_user_repos(client, user, repos)
     user_repos_full_names = Enum.map(user_repos, fn repo -> repo.full_name end)
 
     repos_status = Enum.map(user_repos, &create_webhook(client, &1))
@@ -11,13 +14,12 @@ defmodule Dev3.GitHubClient do
     {:ok, repos_status}
   end
 
-  defp retrieve_user_repos(client, repos) do
+  defp retrieve_user_repos(client, user, repos) do
     Tentacat.Repositories.list_mine(client)
     |> Enum.filter_map(fn repo -> Enum.member?(repos, repo["full_name"]) end,
                        fn repo -> %{full_name: repo["full_name"],
                                     github_id: repo["id"],
-                                    name: repo["name"],
-                                    owner: repo["owner"]["login"]} end)
+                                    user_id:   user.id} end)
   end
 
   defp create_webhook(client, repo) do
@@ -37,7 +39,8 @@ defmodule Dev3.GitHubClient do
       }
     ]
 
-    response = Tentacat.Hooks.create(repo.owner, repo.name, body, client)
+    [owner, name] = String.split(repo.full_name, "/")
+    response = Tentacat.Hooks.create(owner, name, body, client)
     already_exists_error_msg = ~s(Hook already exists on this repository)
 
     case response do
