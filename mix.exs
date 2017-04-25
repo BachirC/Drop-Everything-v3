@@ -37,7 +37,7 @@ defmodule Dev3.Mixfile do
      {:phoenix_live_reload, "~> 1.0", only: :dev},
      {:gettext, "~> 0.11"},
      {:cowboy, "~> 1.0"},
-     {:httpoison, "~> 0.10.0"},
+     {:httpoison, "~> 0.11.1"},
      # HACK: Overrides retired version 1.6.6 default to httpoison :
      # https://github.com/edgurgel/httpoison/issues/226
      {:hackney, "~> 1.7.0", override: true},
