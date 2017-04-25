@@ -41,11 +41,11 @@ defmodule Dev3.Web.AuthController do
     end
   end
 
-  defp to_slack_user_fields(raw_data) do
+  defp to_slack_user_fields(data) do
     %{
-      slack_user_id: raw_data.other_params["user_id"],
-      slack_team_id: raw_data.other_params["team_id"],
-      slack_access_token: raw_data.access_token
+      slack_user_id: data.other_params["user_id"],
+      slack_team_id: data.other_params["team_id"],
+      slack_access_token: data.access_token
     }
   end
 

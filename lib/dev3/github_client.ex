@@ -1,4 +1,5 @@
 defmodule Dev3.GitHubClient do
+  @webhook_events ~w(pull_request pull_request_review pull_request_review_comment)
 
   @doc"""
     Create GitHub webhooks for the given repos.
@@ -15,11 +16,15 @@ defmodule Dev3.GitHubClient do
   end
 
   defp retrieve_user_repos(client, user, repos) do
-    Tentacat.Repositories.list_mine(client)
-    |> Enum.filter_map(fn repo -> Enum.member?(repos, repo["full_name"]) end,
-                       fn repo -> %{full_name: repo["full_name"],
-                                    github_id: repo["id"],
-                                    user_id:   user.id} end)
+    case repos = Tentacat.Repositories.list_mine(client) do
+      {200, _} -> Enum.filter_map(repos,
+                                  fn repo -> Enum.member?(repos, repo["full_name"]) end,
+                                  fn repo -> %{full_name: repo["full_name"],
+                                               github_id: repo["id"],
+                                               user_id:   user.id}
+                                  end)
+      {401, _} -> :unauthorized
+    end
   end
 
   defp create_webhook(client, repo) do
@@ -28,11 +33,7 @@ defmodule Dev3.GitHubClient do
     body = [
       name: "web",
       active: true,
-      events: [
-        "pull_request",
-        "pull_request_review",
-        "pull_request_review_comment"
-      ],
+      events: @webhook_events,
       config: %{
         url: url,
         content_type: "json"
@@ -41,13 +42,12 @@ defmodule Dev3.GitHubClient do
 
     [owner, name] = String.split(repo.full_name, "/")
     response = Tentacat.Hooks.create(owner, name, body, client)
-    already_exists_error_msg = ~s(Hook already exists on this repository)
 
     case response do
       {201, _} -> [:created, repo]
-      {422, %{"errors" => [%{"message" => already_exists_error_msg}]}} -> [:noop, repo]
+      {422, %{"errors" => [%{"message" => msg}]}} -> [:noop, repo]
       {404, _} -> [:permission_error, repo]
-      {_} -> [:unknown_error, repo]
+      {_, _} -> [:unknown_error, repo]
     end
   end
 end
