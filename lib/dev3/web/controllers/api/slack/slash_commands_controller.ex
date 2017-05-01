@@ -4,6 +4,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
   alias Dev3.GitHubClient
   alias Dev3.User
   alias Dev3.GitHub.WatchedRepo
+  alias Dev3.SlackMessenger
 
   action_fallback Dev3.Web.API.Slack.SlashCommandsFallbackController
 
@@ -18,6 +19,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
   def watch_repos(%{assigns: %{user: user, args: args}} = conn, _params) do
     with {:ok, repos_status} <- GitHubClient.create_webhooks(user, args) do
       WatchedRepo.insert_watched(user, repos_to_watch(repos_status))
+      SlackMessenger.notify("watch_repos_response", user, repos_status)
       send_resp(conn, 200, "")
     end
   end

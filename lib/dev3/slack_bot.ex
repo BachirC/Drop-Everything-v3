@@ -25,6 +25,13 @@ defmodule Dev3.SlackBot do
     |> Repo.insert_or_update
   end
 
+  def retrieve_bot(user) do
+    case Repo.get_by(__MODULE__, Map.take(user, [:slack_team_id])) do
+      nil -> raise 'No bot for this team'
+      bot -> bot
+    end
+  end
+
 #======= Changesets ========#
 
   @create_fields ~w(slack_user_id slack_team_id slack_access_token)a
