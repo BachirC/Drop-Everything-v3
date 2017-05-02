@@ -27,7 +27,7 @@ defmodule Dev3.GitHub.WatchedRepo do
     to the user through Slack.
   """
   def delete_unwatched(user, full_names) do
-    query = from repo in "watched_repos",
+    query = from repo in __MODULE__,
             where: repo.user_id == type(^user.id, Ecto.UUID) and repo.full_name in ^full_names
 
     Repo.delete_all(query)
