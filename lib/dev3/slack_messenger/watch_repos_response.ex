@@ -1,8 +1,10 @@
 defmodule Dev3.SlackMessenger.WatchReposResponse do
-  def build_attachements(data) do
-    data
-    |> Map.keys()
-    |> Enum.reduce([], fn(key, acc) -> [attachments(key, data[key]) | acc] end)
+  @statuses ~w(not_found permission_error noop created)a
+
+  def build_attachments(data) do
+    # To reorder the repos by status following @statuses order for better display
+    @statuses -- (@statuses -- Map.keys(data))
+    |> Enum.reduce([], fn(key, acc) -> if !Enum.empty?(repos = data[key]), do: [attachments(key, repos) | acc] end)
     |> Poison.encode!()
   end
 
@@ -23,7 +25,7 @@ defmodule Dev3.SlackMessenger.WatchReposResponse do
   end
   defp attachments(:noop, repos) do
     %{
-      "title": "Repos newly watched, GitHub webhooks already exist :",
+      "title": "Repos newly watched, a GitHub webhook already exists for the following repos :",
       "text": Enum.map_join(repos, ", ", fn repo -> repo.full_name end),
       "color": "#0000B7"
     }

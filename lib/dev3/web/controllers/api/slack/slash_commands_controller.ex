@@ -17,10 +17,10 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     the repos by the user.
   """
   def watch_repos(%{assigns: %{user: user, args: args}} = conn, _params) do
-    with {:ok, repos_status} <- GitHubClient.create_webhooks(user, args) do
-      WatchedRepo.insert_watched(user, repos_to_watch(repos_status))
-      SlackMessenger.notify("watch_repos_response", user, repos_status)
-      send_resp(conn, 200, "")
+    with {:ok, repos_status} <- GitHubClient.create_webhooks(user, args),
+      {_, nil} <- WatchedRepo.insert_watched(user, repos_to_watch(repos_status)),
+      %{"ok" => true} <- SlackMessenger.notify("watch_repos_response", user, repos_status) do
+        send_resp(conn, 200, "")
     end
   end
 

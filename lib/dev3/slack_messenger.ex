@@ -14,7 +14,7 @@ defmodule Dev3.SlackMessenger do
 
   def notify(message_type, user, data) do
     %{slack_access_token: bot_token} = SlackBot.retrieve_bot(user)
-    attachments = apply(Module.concat([__MODULE__, Macro.camelize(message_type)]), :build_attachements, [data])
+    attachments = apply(Module.concat([__MODULE__, Macro.camelize(message_type)]), :build_attachments, [data])
     %{"channel" => %{"id" => channel_id}} = Slack.Web.Im.open(user.slack_user_id, %{token: bot_token})
     Slack.Web.Chat.post_message(channel_id, "", %{token: bot_token, attachments: attachments, username: "DEv3-Bot"})
   end
