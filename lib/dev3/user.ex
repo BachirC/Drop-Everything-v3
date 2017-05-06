@@ -38,7 +38,8 @@ defmodule Dev3.User do
   end
 
   def retrieve_with_slack(params) do
-    Repo.get_by(__MODULE__, Map.take(params, [:slack_user_id, :slack_team_id]))
+    # Comparing to nil values in query is forbidden
+    Repo.get_by(__MODULE__, Enum.reject(params, fn {_k, v} -> is_nil(v) end))
   end
 
 #============== Changesets ===============#

@@ -13,9 +13,9 @@ defmodule Dev3.SlackMessenger.WatchReposResponse do
   defp attachments(:not_found, repos) do
     %{
       "title": """
-        These repos have not been found. Either it's a mistyping error or these repos are\
-        private and you need to give DEv3 access to them\
-        https://help.github.com/articles/requesting-organization-approval-for-your-authorized-applications
+       These repos have not been found. Either it's a mistyping error or these repos are\
+       private and you need to give DEv3 access to them\
+       https://help.github.com/articles/requesting-organization-approval-for-your-authorized-applications
       """,
       "text": "• " <> Enum.join(repos, "\n• "),
       "color": "#ef0e02"
@@ -25,9 +25,9 @@ defmodule Dev3.SlackMessenger.WatchReposResponse do
   defp attachments(:no_rights, repos) do
     %{
       "title": """
-        Repos newly watched, you don't have enough permissions to add a webhook to the following repos.
-        To start receiving messages for these repos, make sure a GitHub webhook is set for DEv3\
-        (How to add DEv3 webhook on GitHub)
+       Repos newly watched, you don't have enough permissions to add a webhook to the following repos.
+       To start receiving messages for these repos, make sure a GitHub webhook is set for DEv3\
+       (How to add DEv3 webhook on GitHub)
       """,
       "text": "• " <> Enum.join(repos, "\n• "),
       "color": "#ed8a00"
