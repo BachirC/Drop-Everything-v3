@@ -10,11 +10,11 @@ defmodule Dev3.Web.API.Slack.SlashCommandsFallbackController do
 
   def call(conn, %{"error" => error}) do
     Logger.debug("Slack messenger error : #{error}")
-    send_resp(conn, 200, "")
+    send_resp(conn, 200, "Slack Messenger error")
   end
 
   def call(conn, error) do
     Logger.debug("error : #{inspect error}")
-    send_resp(conn, 200, "")
+    send_resp(conn, 200, "Unexpected error")
   end
 end

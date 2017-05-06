@@ -1,9 +1,11 @@
-defmodule Dev3.SlackMessenger.UnwatchReposResponse do
+defmodule Dev3.SlackMessenger.HTTPClient.UnwatchReposResponse do
+  @behaviour Dev3.SlackMessenger.HTTPClient
+
   @statuses ~w(not_found unwatched)a
 
   def build_attachments(data) do
     # To reorder the repos by status following @statuses order for better display
-    res = @statuses -- (@statuses -- Map.keys(data))
+    @statuses -- (@statuses -- Map.keys(data))
     |> Enum.reduce([], fn(key, acc) ->
       if !Enum.empty?(repos = data[key]), do: [attachments(key, repos) | acc], else: acc
       end)

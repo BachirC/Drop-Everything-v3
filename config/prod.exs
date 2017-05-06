@@ -20,6 +20,8 @@ config :dev3, Dev3.Web.Endpoint,
 
 # Do not print debug messages in production
 config :logger, level: :info
+config :dev3, :github_client, Dev3.GitHubClient.HTTPClient
+config :dev3, :slack_messenger, Dev3.SlackMessenger.HTTPClient
 
 # ## SSL Support
 #

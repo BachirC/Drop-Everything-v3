@@ -1,16 +1,17 @@
 defmodule Dev3.Web.API.Slack.SlashCommandsController do
   use Dev3.Web, :controller
 
-  alias Dev3.GitHubClient
   alias Dev3.User
   alias Dev3.GitHub.WatchedRepo
-  alias Dev3.SlackMessenger
 
   action_fallback Dev3.Web.API.Slack.SlashCommandsFallbackController
 
   plug :verify_token
   plug :assign_user
   plug :parse_args, "before commands with args" when action in [:watch_repos, :unwatch_repos]
+
+  @github_client   Application.get_env(:dev3, :github_client)
+  @slack_messenger Application.get_env(:dev3, :slack_messenger)
 
   @doc """
     Endpoint for Slack /watchrepos command.
@@ -25,7 +26,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     - List of repos that have not been found.
   """
   def watch_repos(%{assigns: %{user: user, args: args}} = conn, _params) do
-    {:ok, repos_status} = GitHubClient.create_webhooks(user, args)
+    {:ok, repos_status} = @github_client.create_webhooks(user, args)
 
     valid_repos = listify(repos_status)
     {_, nil} = WatchedRepo.insert_watched(user, valid_repos)
@@ -33,8 +34,9 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     repos_names = for {k, v} <- repos_status, into: %{}, do: {k, Enum.map(v, fn repo -> repo.full_name end)}
     # Somehow, piping directly on the comprehension has unexpected results
     repos_names = repos_names |> Map.put(:not_found, args -- Enum.map(valid_repos, fn repo -> repo.full_name end))
-    %{"ok" => true} = SlackMessenger.notify("watch_repos_response", user, repos_names)
-    send_resp(conn, :ok, "/watchrepos successful")
+    with %{"ok" => true} <- @slack_messenger.notify("watch_repos_response", user, repos_names) do
+      send_resp(conn, :ok, "/watchrepos successful")
+    end
   end
 
   @doc """
@@ -49,12 +51,12 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     repos_status = %{unwatched: args -- repos_not_found, not_found: repos_not_found}
 
       with {_, nil}     <- WatchedRepo.delete_unwatched(user, args),
-        %{"ok" => true} <- SlackMessenger.notify("unwatch_repos_response", user, repos_status) do
+        %{"ok" => true} <- @slack_messenger.notify("unwatch_repos_response", user, repos_status) do
         send_resp(conn, :ok, "/unwatchrepos successful")
       end
   end
 
-  defp verify_token(%{params: %{"token" => token} = params} = conn, _) do
+  defp verify_token(%{params: %{"token" => token}} = conn, _) do
     if token == Application.get_env(:dev3, Slack)[:verification_token] do
       conn
     else
@@ -65,7 +67,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     conn |> send_resp(:ok, "Invalid token") |> halt
   end
 
-  defp assign_user(%{params: %{"team_id" => team_id, "user_id" => user_id} = params} = conn,_) do
+  defp assign_user(%{params: %{"team_id" => team_id, "user_id" => user_id}} = conn,_) do
     if user = User.retrieve_with_slack(%{slack_team_id: team_id, slack_user_id: user_id}) do
       conn |> assign(:user, user)
     else
@@ -76,7 +78,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     conn |> send_resp(:ok, "User not found") |> halt
   end
 
-  defp parse_args(%{params: %{"text" => args, "command" => command} = params} = conn, _) do
+  defp parse_args(%{params: %{"text" => args, "command" => command}} = conn, _) do
     case parse(args) do
       {:ok, parsed_args} -> assign(conn, :args, parsed_args)
       :no_args_error -> handle_no_args_error(conn, command)
@@ -91,7 +93,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
   defp parse(args), do: {:ok, String.split(args, " ")}
 
   defp handle_no_args_error(conn, command) do
-    SlackMessenger.notify("no_args_response", conn.assigns[:user], command)
+    @slack_messenger.notify("no_args_response", conn.assigns[:user], command)
     conn |> send_resp(:ok, "Args parsing error") |> halt
   end
 

@@ -1,4 +1,6 @@
-defmodule Dev3.SlackMessenger.WatchReposResponse do
+defmodule Dev3.SlackMessenger.HTTPClient.WatchReposResponse do
+  @behaviour Dev3.SlackMessenger.HTTPClient
+
   @statuses ~w(not_found no_rights noop created)a
 
   def build_attachments(data) do

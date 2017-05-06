@@ -1,4 +1,6 @@
-defmodule Dev3.SlackMessenger.NoArgsResponse do
+defmodule Dev3.SlackMessenger.HTTPClient.NoArgsResponse do
+  @behaviour Dev3.SlackMessenger.HTTPClient
+
   def build_attachments(data) do
     [%{
       "title": "Error on command #{data}",

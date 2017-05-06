@@ -27,7 +27,7 @@ defmodule Dev3.SlackBot do
 
   def retrieve_bot(user) do
     case Repo.get_by(__MODULE__, Map.take(user, [:slack_team_id])) do
-      nil -> raise 'No bot for this team'
+      nil -> {:error, 'No Slack bot found'}
       bot -> bot
     end
   end

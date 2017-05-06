@@ -16,3 +16,9 @@ config :dev3, Dev3.Repo,
   database: "dev3_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
+
+config :dev3, Slack,
+  verification_token: System.get_env("SLACK_VERIFICATION_TOKEN")
+
+config :dev3, :github_client, Dev3.GitHubClient.InMemory
+config :dev3, :slack_messenger, Dev3.SlackMessenger.InMemory

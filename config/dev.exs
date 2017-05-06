@@ -68,3 +68,6 @@ config :dev3, GitHub,
   scope: System.get_env("GITHUB_SCOPE")
 
 config :oauth2, debug: true
+
+config :dev3, :github_client, Dev3.GitHubClient.HTTPClient
+config :dev3, :slack_messenger, Dev3.SlackMessenger.HTTPClient
