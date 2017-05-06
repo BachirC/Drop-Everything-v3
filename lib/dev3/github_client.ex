@@ -6,11 +6,10 @@ defmodule Dev3.GitHubClient do
   """
   def create_webhooks(%{github_access_token: access_token} = user, repos) do
     client = Tentacat.Client.new(%{access_token: access_token})
-    user_repos = retrieve_user_repos(client, user, repos)
+    [_ | _] = (user_repos = retrieve_user_repos(client, user, repos))
 
     repos_status = Enum.map(user_repos, &create_webhook(client, &1))
                    |> Enum.group_by(&List.first/1, &List.last/1)
-                   |> Map.put(:not_found, repos -- Enum.map(user_repos, fn repo -> repo.full_name end))
     {:ok, repos_status}
   end
 
@@ -44,7 +43,7 @@ defmodule Dev3.GitHubClient do
     case Tentacat.Hooks.create(owner, name, body, client) do
       {201, _} -> [:created, repo]
       {422, %{"errors" => [%{"message" => msg}]}} -> [:noop, repo]
-      {404, _} -> [:permission_error, repo]
+      {404, _} -> [:no_rights, repo]
       {_, _} -> [:unknown_error, repo]
     end
   end

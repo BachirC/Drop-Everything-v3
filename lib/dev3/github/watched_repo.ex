@@ -10,6 +10,13 @@ defmodule Dev3.GitHub.WatchedRepo do
     belongs_to :user, Dev3.User, type: :binary_id
   end
 
+  def list(user) do
+    query = from repo in __MODULE__,
+            where: repo.user_id == type(^user.id, Ecto.UUID)
+
+    Repo.all(query)
+  end
+
   @doc """
     Start watching repos by the user.
     All incoming GitHub webhooks from these repos that reference the user will be dispatched
