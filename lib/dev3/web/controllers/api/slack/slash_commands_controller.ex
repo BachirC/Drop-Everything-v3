@@ -10,7 +10,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
 
   plug :verify_token
   plug :assign_user
-  plug :parse_args
+  plug :parse_args, "before commands with args" when action in [:watch_repos, :unwatch_repos]
 
   @doc """
     Endpoint for Slack /watchrepos command.
