@@ -1,13 +1,15 @@
 language: elixir
 
-elixir:
-  - 1.4.1
+elixir: 1.4.1
 
-addons:
-  - postgresql: '9.5'
+otp_release: 19.0
 
+sudo: false
+dist: trusty
 services:
   - postgresql
+addons:
+  - postgresql: "9.5"
 
 before_script:
   - cp config/travis.exs config/test.exs
