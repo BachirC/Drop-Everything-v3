@@ -29,7 +29,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     {:ok, repos_status} = @github_client.create_webhooks(user, args)
 
     valid_repos = listify(repos_status)
-    {_, nil} = WatchedRepo.insert_watched(user, valid_repos)
+    {_, nil} = WatchedRepo.insert_watched(valid_repos)
 
     repos_names = for {k, v} <- repos_status, into: %{}, do: {k, Enum.map(v, fn repo -> repo.full_name end)}
     # Somehow, piping directly on the comprehension has unexpected results

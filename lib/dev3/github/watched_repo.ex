@@ -6,7 +6,6 @@ defmodule Dev3.GitHub.WatchedRepo do
 
   use Ecto.Schema
   import Ecto.Query
-  import Ecto.Changeset
   alias Dev3.Repo
 
   schema "watched_repos" do
@@ -27,7 +26,7 @@ defmodule Dev3.GitHub.WatchedRepo do
     All incoming GitHub webhooks from these repos that reference the user will be dispatched
     to the user through Slack.
   """
-  def insert_watched(user, repos) do
+  def insert_watched(repos) do
     Repo.insert_all(__MODULE__, repos,
                     on_conflict: :nothing,
                     conflict_target: [:user_id, :full_name])
@@ -43,16 +42,5 @@ defmodule Dev3.GitHub.WatchedRepo do
             where: repo.user_id == type(^user.id, Ecto.UUID) and repo.full_name in ^full_names
 
     Repo.delete_all(query)
-  end
-
-  #====== Changesets =======#
-
-  @create_fields ~w(user_id github_id full_name)a
-  @required_fields ~w(github_id full_name)a
-  defp create_changeset(repo, params) do
-    repo
-    |> cast(params, @create_fields)
-    |> validate_required(@required_fields)
-    |> assoc_constraint(:user)
   end
 end
