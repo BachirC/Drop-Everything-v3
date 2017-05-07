@@ -12,7 +12,7 @@ config :logger, level: :warn
 # Configure your database
 config :dev3, Dev3.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "BachirC",
+  username: "postgres",
   database: "dev3_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
