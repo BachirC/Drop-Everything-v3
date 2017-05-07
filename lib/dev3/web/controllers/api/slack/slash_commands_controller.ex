@@ -34,7 +34,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     repos_names = for {k, v} <- repos_status, into: %{}, do: {k, Enum.map(v, fn repo -> repo.full_name end)}
     # Somehow, piping directly on the comprehension has unexpected results
     repos_names = repos_names |> Map.put(:not_found, args -- Enum.map(valid_repos, fn repo -> repo.full_name end))
-    with %{"ok" => true} <- @slack_messenger.notify("watch_repos_response", user, repos_names) do
+    with :ok <- @slack_messenger.notify("watch_repos_response", user, repos_names) do
       send_resp(conn, :ok, "/watchrepos successful")
     end
   end
@@ -51,7 +51,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     repos_status = %{unwatched: args -- repos_not_found, not_found: repos_not_found}
 
       with {_, nil}     <- WatchedRepo.delete_unwatched(user, args),
-        %{"ok" => true} <- @slack_messenger.notify("unwatch_repos_response", user, repos_status) do
+        :ok <- @slack_messenger.notify("unwatch_repos_response", user, repos_status) do
         send_resp(conn, :ok, "/unwatchrepos successful")
       end
   end
