@@ -4,7 +4,7 @@ elixir:
   - 1.4.1
 
 addons:
-  - postgresql: '9.6.2'
+  - postgresql: '9.5'
 
 services:
   - postgresql
