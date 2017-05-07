@@ -37,7 +37,8 @@ defmodule Dev3.Web.API.Slack.SlashCommandsControllerTest do
              [token: Application.get_env(:dev3, Slack)[:verification_token],
               user_id: user.slack_user_id,
               team_id: user.slack_team_id,
-              command: @slack_command]
+              command: @slack_command,
+              text: ""]
 
       assert conn.halted
       assert conn.status == Plug.Conn.Status.code(:ok)

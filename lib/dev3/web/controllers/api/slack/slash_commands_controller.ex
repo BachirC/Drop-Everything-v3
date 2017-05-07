@@ -88,8 +88,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     conn |> send_resp(:ok, "Args parsing error") |> halt
   end
 
-  defp parse(nil), do: :no_args_error
-  defp parse(""), do: :no_args_error
+  defp parse(args) when is_nil(args) or args == "", do: :no_args_error
   defp parse(args), do: {:ok, String.split(args, " ")}
 
   defp handle_no_args_error(conn, command) do
