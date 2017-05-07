@@ -1,4 +1,8 @@
 defmodule Dev3.Application do
+  @moduledoc """
+    Entry-point of Dev3 app.
+  """
+
   use Application
 
   # See http://elixir-lang.org/docs/stable/elixir/Application.html

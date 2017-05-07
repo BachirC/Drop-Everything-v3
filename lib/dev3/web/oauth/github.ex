@@ -19,7 +19,8 @@ defmodule GitHub do
     OAuth client for Github.
   """
   def client do
-    Application.get_env(:dev3, GitHub)
+    :dev3
+    |> Application.get_env(GitHub)
     |> Keyword.merge(config())
     |> OAuth2.Client.new()
   end

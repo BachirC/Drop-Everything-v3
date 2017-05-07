@@ -67,7 +67,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     conn |> send_resp(:ok, "Invalid token") |> halt
   end
 
-  defp assign_user(%{params: %{"team_id" => team_id, "user_id" => user_id}} = conn,_) do
+  defp assign_user(%{params: %{"team_id" => team_id, "user_id" => user_id}} = conn, _) do
     if user = User.retrieve_with_slack(%{slack_team_id: team_id, slack_user_id: user_id}) do
       conn |> assign(:user, user)
     else

@@ -1,4 +1,9 @@
 defmodule Dev3.GitHub.WatchedRepo do
+  @moduledoc """
+    Defines the schema for GitHub repos watched by users.
+    It allows to know if a user should receive messages for a given repo.
+  """
+
   use Ecto.Schema
   import Ecto.Query
   import Ecto.Changeset

@@ -44,7 +44,8 @@ defmodule Dev3.Mixfile do
      {:poison, "~> 3.0"},
      {:oauth2, "~> 0.9"},
      {:tentacat, "~> 0.5"},
-     {:slack, "~> 0.11.0"}]
+     {:slack, "~> 0.11.0"},
+     {:credo, "~> 0.7", only: [:dev, :test]}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

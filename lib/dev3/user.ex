@@ -1,4 +1,7 @@
 defmodule Dev3.User do
+  @moduledoc """
+    Module defining the User schema.
+  """
   use Ecto.Schema
   import Ecto.Changeset
   alias Dev3.Repo
@@ -21,7 +24,7 @@ defmodule Dev3.User do
   def update(id, provider, params) do
     case Repo.get(__MODULE__, id) do
       nil -> {:error, id, provider}
-      user -> update_changeset(provider, user, params) |> Repo.update
+      user -> provider |> update_changeset(user, params) |> Repo.update
     end
   end
 
@@ -30,11 +33,12 @@ defmodule Dev3.User do
     or updates the access_token otherwise.
   """
   def insert_or_update(params) do
-     case retrieve_with_slack(params) do
+     chgset = case retrieve_with_slack(params) do
        nil ->  create_changeset(%__MODULE__{}, params)
        user -> update_changeset("slack", user, params)
      end
-     |> Repo.insert_or_update
+
+     Repo.insert_or_update(chgset)
   end
 
   def retrieve_with_slack(params) do

@@ -1,4 +1,10 @@
 defmodule Dev3.SlackBot do
+  @moduledoc """
+    Defines SlackBot schema.
+    The SlackBot is unique to every Slack team and is responsible for interacting with
+    users using DEv3 in the same team.
+  """
+
   use Ecto.Schema
 
   import Ecto.Changeset
@@ -18,11 +24,12 @@ defmodule Dev3.SlackBot do
     otherwise
   """
   def insert_or_update(params) do
-    case Repo.get_by(__MODULE__, Map.take(params, [:slack_team_id])) do
+    chgset = case Repo.get_by(__MODULE__, Map.take(params, [:slack_team_id])) do
       nil ->  create_changeset(%__MODULE__{}, params)
       user -> update_changeset(user, params)
     end
-    |> Repo.insert_or_update
+
+    Repo.insert_or_update(chgset)
   end
 
   def retrieve_bot(user) do

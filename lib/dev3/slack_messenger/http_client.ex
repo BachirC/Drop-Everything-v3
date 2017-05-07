@@ -1,4 +1,8 @@
 defmodule Dev3.SlackMessenger.HTTPClient do
+  @moduledoc """
+    Real SlackMessenger handling the interaction with Slack API to send messages to users.
+  """
+
   # HACK: `use Slack` not properly calling macro doing the following imports and definitions
   import Slack
   import Slack.Lookups
@@ -20,9 +24,6 @@ defmodule Dev3.SlackMessenger.HTTPClient do
 
   @bot_username "DEv3-Bot"
 
-  @doc """
-    Sends a message to a Slack user on behalf of the DEv3 Slack team bot.
-  """
   def notify(message_type, user, data) do
     with %{slack_access_token: bot_token} <- SlackBot.retrieve_bot(user) do
       attachments = apply(Module.concat([__MODULE__, Macro.camelize(message_type)]), :build_attachments, [data])

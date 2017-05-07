@@ -1,4 +1,8 @@
 defmodule Dev3.SlackMessenger.HTTPClient.NoArgsResponse do
+  @moduledoc """
+    Defines the Slack response message attachments for command issued without args.
+  """
+
   @behaviour Dev3.SlackMessenger.HTTPClient
 
   def build_attachments(data) do

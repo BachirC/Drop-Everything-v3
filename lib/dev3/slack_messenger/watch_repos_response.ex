@@ -1,4 +1,8 @@
 defmodule Dev3.SlackMessenger.HTTPClient.WatchReposResponse do
+  @moduledoc """
+    Defines the Slack response message attachments for command /wachrepos.
+  """
+
   @behaviour Dev3.SlackMessenger.HTTPClient
 
   @statuses ~w(not_found no_rights noop created)a
@@ -7,7 +11,7 @@ defmodule Dev3.SlackMessenger.HTTPClient.WatchReposResponse do
     # To reorder the repos by status following @statuses order for better display
     @statuses -- (@statuses -- Map.keys(data))
     |> Enum.reduce([], fn(key, acc) ->
-      if !Enum.empty?(repos = data[key]), do: [attachments(key, repos) | acc], else: acc
+      if Enum.empty?(data[key]), do: acc, else: [attachments(key, data[key]) | acc]
       end)
     |> Poison.encode!()
   end

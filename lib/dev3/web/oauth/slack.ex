@@ -19,7 +19,8 @@ defmodule Slack do
     OAuth client for Github.
   """
   def client do
-    Application.get_env(:dev3, Slack)
+    :dev3
+    |> Application.get_env(Slack)
     |> Keyword.merge(config())
     |> OAuth2.Client.new()
   end

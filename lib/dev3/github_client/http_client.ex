@@ -1,4 +1,8 @@
 defmodule Dev3.GitHubClient.HTTPClient do
+  @moduledoc """
+    Real GitHubClient interacting with GitHub API to create webhooks for repos.
+  """
+
   @behaviour Dev3.GitHubClient
 
   @webhook_events ~w(pull_request pull_request_review pull_request_review_comment)
@@ -10,7 +14,8 @@ defmodule Dev3.GitHubClient.HTTPClient do
     client = Tentacat.Client.new(%{access_token: access_token})
     [_ | _] = (user_repos = retrieve_user_repos(client, user, repos))
 
-    repos_status = Enum.map(user_repos, &create_webhook(client, &1))
+    repos_status = user_repos
+                   |> Enum.map(&create_webhook(client, &1))
                    |> Enum.group_by(&List.first/1, &List.last/1)
     {:ok, repos_status}
   end

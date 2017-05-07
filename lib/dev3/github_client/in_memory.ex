@@ -1,4 +1,8 @@
 defmodule Dev3.GitHubClient.InMemory do
+  @moduledoc """
+    GitHubClient mock for tests.
+  """
+
   @behaviour Dev3.GitHubClient
 
   def create_webhooks(user, _repos) do
