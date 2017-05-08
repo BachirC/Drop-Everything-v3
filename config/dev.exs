@@ -64,7 +64,8 @@ config :dev3, Slack,
 config :dev3, GitHub,
   client_id: System.get_env("GITHUB_CLIENT_ID"),
   client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
-  scope: System.get_env("GITHUB_SCOPE")
+  scope: System.get_env("GITHUB_SCOPE"),
+  webhook_events: ~w(pull_request pull_request_review pull_request_review_comment)
 
 config :oauth2, debug: true
 

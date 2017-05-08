@@ -18,7 +18,11 @@ config :dev3, Dev3.Repo,
   pool: Ecto.Adapters.SQL.Sandbox
 
 config :dev3, Slack,
-  verification_token: System.get_env("SLACK_VERIFICATION_TOKEN")
+  verification_token: System.get_env("SLACK_VERIFICATION_TOKEN"),
+  webhook_events: ~w(pull_request pull_request_review pull_request_review_comment)
+
+config :dev3, GitHub,
+  webhook_events: ~w(pull_request pull_request_review pull_request_review_comment)
 
 config :dev3, :github_client, Dev3.GitHubClient.InMemory
 config :dev3, :slack_messenger, Dev3.SlackMessenger.InMemory

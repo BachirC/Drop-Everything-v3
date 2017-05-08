@@ -5,7 +5,7 @@ defmodule Dev3.GitHubClient.HTTPClient do
 
   @behaviour Dev3.GitHubClient
 
-  @webhook_events ~w(pull_request pull_request_review pull_request_review_comment)
+  @webhook_events Application.get_env(:dev3, GitHub)[:webhook_events]
 
   @doc"""
     Create GitHub webhooks for the given repos.
