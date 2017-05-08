@@ -12,7 +12,8 @@ config :logger, level: :warn
 # Configure your database
 config :dev3, Dev3.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
+  username: System.get_env("DATABASE_POSTGRESQL_USERNAME") || "postgres",
+  password: System.get_env("DATABASE_POSTGRESQL_PASSWORD") || "",
   database: "dev3_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
