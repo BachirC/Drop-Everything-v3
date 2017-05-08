@@ -18,7 +18,7 @@ defmodule Dev3.SlackMessenger.HTTPClient do
   #===================================================================================#
 
   @behaviour Dev3.SlackMessenger
-  @callback build_attachments(data :: list(binary)) :: binary
+  @callback build_message(data :: list(binary)) :: binary
 
   alias Dev3.SlackBot
 
@@ -26,10 +26,11 @@ defmodule Dev3.SlackMessenger.HTTPClient do
 
   def notify(message_type, user, data) do
     with %{slack_access_token: bot_token} <- SlackBot.retrieve_bot(user) do
-      attachments = apply(Module.concat([__MODULE__, Macro.camelize(message_type)]), :build_attachments, [data])
+      message = apply(Module.concat([__MODULE__, Macro.camelize(message_type)]), :build_message, [data])
       with %{"channel" => %{"id" => channel_id}} <- Slack.Web.Im.open(user.slack_user_id, %{token: bot_token}),
         %{"ok" => true} <- Slack.Web.Chat.post_message(channel_id, "", %{token: bot_token,
-                                                                         attachments: attachments,
+                                                                         text: message.text,
+                                                                         attachments: Poison.encode!(message.attachments),
                                                                          username: @bot_username}) do
           :ok
       end

@@ -7,13 +7,16 @@ defmodule Dev3.SlackMessenger.HTTPClient.WatchReposResponse do
 
   @statuses ~w(not_found no_rights noop created)a
 
-  def build_attachments(data) do
+  def build_message(data) do
+    %{text: "", attachments: build_attachments(data)}
+  end
+
+  defp build_attachments(data) do
     # To reorder the repos by status following @statuses order for better display
     @statuses -- (@statuses -- Map.keys(data))
     |> Enum.reduce([], fn(key, acc) ->
       if Enum.empty?(data[key]), do: acc, else: [attachments(key, data[key]) | acc]
       end)
-    |> Poison.encode!()
   end
 
   defp attachments(:not_found, repos) do
