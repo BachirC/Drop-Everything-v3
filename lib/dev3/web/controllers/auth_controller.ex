@@ -60,7 +60,8 @@ defmodule Dev3.Web.AuthController do
   defp to_github_user_fields(data) do
     %{
       github_access_token: data.access_token,
-      github_user_id: data.user_id
+      github_user_id: data.user_id,
+      github_id: data.id
     }
   end
 end

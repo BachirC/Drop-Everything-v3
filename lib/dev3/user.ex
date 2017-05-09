@@ -10,6 +10,7 @@ defmodule Dev3.User do
   schema "users" do
     field :github_access_token, :string
     field :github_user_id, :string
+    field :github_id, :integer
     field :slack_access_token, :string
     field :slack_team_id, :string
     field :slack_user_id, :string
@@ -62,7 +63,7 @@ defmodule Dev3.User do
     |> validate_required(update_fields)
   end
   defp update_changeset("github", user, params) do
-    update_fields = ~w(github_access_token github_user_id)a
+    update_fields = ~w(github_access_token github_user_id github_id)a
     user
     |> cast(params, update_fields)
     |> validate_required(update_fields)

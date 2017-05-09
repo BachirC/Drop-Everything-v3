@@ -44,8 +44,8 @@ defmodule GitHub do
   """
   def get_user!(client) do
     %{token: %{access_token: token}} = client
-    %{body: %{"login" => user_id}} = OAuth2.Client.get!(client, "/user")
-    %{access_token: token, user_id: user_id}
+    %{body: %{"login" => user_id, "id" => id}} = OAuth2.Client.get!(client, "/user")
+    %{access_token: token, user_id: user_id, id: id}
   end
 
   # Strategy Callbacks
