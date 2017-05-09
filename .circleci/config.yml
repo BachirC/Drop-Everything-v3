@@ -1,0 +1,13 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/dev3
+    docker:
+      - image: trenpixster/elixir:1.4.1
+      - image: postgres:9.6
+        environment:
+          POSTGRES_USER: postgres
+    steps:
+      - checkout
+      - run: mix deps.get
+      - run: mix test
