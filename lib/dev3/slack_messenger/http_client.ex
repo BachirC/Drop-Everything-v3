@@ -24,9 +24,20 @@ defmodule Dev3.SlackMessenger.HTTPClient do
 
   @bot_username "DEv3-Bot"
 
-  def notify(message_type, user, data) do
+  @message_type_modules %{watch_repos_response:     WatchReposResponse,
+                          unwatch_repos_response:   UnwatchReposResponse,
+                          no_args_response:         NoArgsResponse,
+                          review_requested:         ReviewRequested,
+                          review_submitted:         ReviewSubmitted,
+                          review_comment_submitted: ReviewCommentSubmitted}
+
+  @message_types Map.keys(@message_type_modules)
+
+  def notify(message_type, user, data) when message_type in @message_types do
     with %{slack_access_token: bot_token} <- SlackBot.retrieve_bot(user) do
-      message = apply(Module.concat([__MODULE__, Macro.camelize(message_type)]), :build_message, [data])
+      message = apply(Module.concat([__MODULE__, @message_type_modules[message_type]]),
+                      :build_message,
+                      [data])
       with %{"channel" => %{"id" => channel_id}} <- Slack.Web.Im.open(user.slack_user_id, %{token: bot_token}),
         %{"ok" => true} <- Slack.Web.Chat.post_message(channel_id, "", %{token: bot_token,
                                                                          text: message.text,
@@ -35,5 +46,9 @@ defmodule Dev3.SlackMessenger.HTTPClient do
           :ok
       end
     end
+  end
+
+  def notify(message_type, _user, _data) do
+    {:unknown_message_type, message_type}
   end
 end
