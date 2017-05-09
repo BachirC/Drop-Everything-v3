@@ -12,11 +12,14 @@ defmodule Dev3.GitHubClient.HTTPClient do
   """
   def create_webhooks(%{github_access_token: access_token} = user, repos) do
     client = Tentacat.Client.new(%{access_token: access_token})
-    [_ | _] = (user_repos = retrieve_user_repos(client, user, repos))
+    user_repos = retrieve_user_repos(client, user, repos)
+    repos_status = case user_repos do
+      []      -> %{}
+      [_ | _] -> user_repos
+                 |> Enum.map(&create_webhook(client, &1))
+                 |> Enum.group_by(&List.first/1, &List.last/1)
+    end
 
-    repos_status = user_repos
-                   |> Enum.map(&create_webhook(client, &1))
-                   |> Enum.group_by(&List.first/1, &List.last/1)
     {:ok, repos_status}
   end
 
