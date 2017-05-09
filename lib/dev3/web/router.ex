@@ -23,7 +23,7 @@ defmodule Dev3.Web.Router do
     pipe_through :api
 
     scope "/github", GitHub do
-      post "/webhook", GitHubController, :webhook
+      post "/webhook", WebhookController, :webhook
     end
 
     scope "/slack", Slack do
