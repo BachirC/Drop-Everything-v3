@@ -34,17 +34,17 @@ defmodule Dev3.SlackMessenger.HTTPClient do
   @message_types Map.keys(@message_type_modules)
 
   def notify(message_type, user, data) when message_type in @message_types do
-    with %{slack_access_token: bot_token} <- SlackBot.retrieve_bot(user) do
-      message = apply(Module.concat([__MODULE__, @message_type_modules[message_type]]),
+    with %{slack_access_token: bot_token} <- SlackBot.retrieve_bot(user),
+      message <- apply(Module.concat([__MODULE__, @message_type_modules[message_type]]),
                       :build_message,
-                      [data])
-      with %{"channel" => %{"id" => channel_id}} <- Slack.Web.Im.open(user.slack_user_id, %{token: bot_token}),
-        %{"ok" => true} <- Slack.Web.Chat.post_message(channel_id, "", %{token: bot_token,
-                                                                         text: message.text,
-                                                                         attachments: Poison.encode!(message.attachments),
-                                                                         username: @bot_username}) do
-          :ok
-      end
+                      [data]),
+      %{"channel" => %{"id" => channel_id}} <- Slack.Web.Im.open(user.slack_user_id, %{token: bot_token}),
+      %{"ok" => true} <- Slack.Web.Chat.post_message(channel_id,
+                                                     message.text,
+                                                     %{token: bot_token,
+                                                       attachments: Poison.encode!(message.attachments),
+                                                       username: @bot_username}) do
+        :ok
     end
   end
 
