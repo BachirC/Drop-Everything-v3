@@ -21,19 +21,19 @@ defmodule Dev3.SlackMessenger.HTTPClient.UnwatchReposResponse do
 
   defp attachments(:unwatched, repos) do
     %{
-      "title": """
+      title: """
         The following repos have been unwatched. You will no longer receive messages\
         related to them. To watch again, run `/watchrepos`
       """,
-      "text": "• " <> Enum.join(repos, "\n• "),
-      "color": "#09c600"
+      text: "· " <> Enum.join(repos, "\n· "),
+      color: "#09c600"
     }
   end
   defp attachments(:not_found, repos) do
     %{
-      "title": "These repos are not being watched or have not been found",
-      "text": "• " <> Enum.join(repos, "\n• "),
-      "color": "#ef0e02"
+      title: "These repos are not being watched or have not been found",
+      text: "· " <> Enum.join(repos, "\n· "),
+      color: "#ef0e02"
     }
   end
 end

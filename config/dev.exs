@@ -65,9 +65,14 @@ config :dev3, GitHub,
   client_id: System.get_env("GITHUB_CLIENT_ID"),
   client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
   scope: System.get_env("GITHUB_SCOPE"),
-  webhook_events: ~w(pull_request pull_request_review pull_request_review_comment)
+  webhook_events: ~w(issues issue_comment pull_request pull_request_review)a,
+  message_type_by_action: %{{"pull_request", "review_requested"} => :review_requested,
+                            {"pull_request_review", "submitted"} => :review_submitted,
+                            {"issues", "opened"}                 => :tagged_in_issue,
+                            {"issue_comment", "created"}         => :tagged_in_issue_comment}
 
 config :oauth2, debug: true
 
 config :dev3, :github_client, Dev3.GitHubClient.HTTPClient
 config :dev3, :slack_messenger, Dev3.SlackMessenger.HTTPClient
+config :dev3, :webhook_parser, Dev3.GitHub.WebhookParser.Real

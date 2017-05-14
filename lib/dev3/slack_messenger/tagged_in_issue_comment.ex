@@ -1,0 +1,28 @@
+defmodule Dev3.SlackMessenger.HTTPClient.TaggedInIssueComment do
+  @moduledoc "Defines the Slack message sent to a user when tagged in an issue comment"
+
+  @behaviour Dev3.SlackMessenger.HTTPClient
+
+  def build_message(data) do
+    %{text: "", attachments: build_attachments(data)}
+  end
+
+  defp build_attachments(data) do
+    [%{
+      title: "You have been mentioned · #{humanize(data.issue.type)} ##{data.issue.number} · #{data.issue.title}",
+      title_link: data.comment.url,
+      author_name: data.sender.name,
+      author_icon: data.sender.avatar_url,
+      footer: data.repo.name,
+      footer_icon: data.owner.avatar_url,
+      color: "#a7c7f9"
+    }]
+  end
+
+  defp humanize(string) do
+    string
+    |> to_string()
+    |> String.replace("_", " ")
+    |> String.capitalize()
+  end
+end

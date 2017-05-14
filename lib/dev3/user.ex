@@ -5,6 +5,7 @@ defmodule Dev3.User do
   use Ecto.Schema
   import Ecto.Changeset
   alias Dev3.Repo
+  import Ecto.Query
 
   @primary_key {:id, :binary_id, autogenerate: true}
   schema "users" do
@@ -17,6 +18,27 @@ defmodule Dev3.User do
 
     has_many :watched_repos, Dev3.GitHub.WatchedRepo
     timestamps()
+  end
+
+  def list_by_github_user_ids(github_user_ids) do
+    query = from u in __MODULE__,
+            where: u.github_user_id in ^github_user_ids,
+            select: %{id: u.id, slack_team_id: u.slack_team_id, slack_user_id: u.slack_user_id}
+
+    Repo.all(query)
+  end
+
+  def list_by_github_id(github_id) do
+    query = from u in __MODULE__,
+            where: u.github_id == ^github_id,
+            select: %{id: u.id, slack_team_id: u.slack_team_id, slack_user_id: u.slack_user_id}
+
+    Repo.all(query)
+  end
+
+  def retrieve_with_slack(params) do
+    # Comparing to nil values in query is forbidden
+    Repo.get_by(__MODULE__, Enum.reject(params, fn {_k, v} -> is_nil(v) end))
   end
 
   @doc """
@@ -40,11 +62,6 @@ defmodule Dev3.User do
      end
 
      Repo.insert_or_update(chgset)
-  end
-
-  def retrieve_with_slack(params) do
-    # Comparing to nil values in query is forbidden
-    Repo.get_by(__MODULE__, Enum.reject(params, fn {_k, v} -> is_nil(v) end))
   end
 
 #============== Changesets ===============#

@@ -1,11 +1,9 @@
 defmodule Dev3.GitHub.WebhookParser do
-  @events Application.get_env(:dev3, GitHub)[:webhook_events]
+  @moduledoc """
+    Defines the contract for WebhookParser behaviour.
+  """
 
-  def parse(event, params) when event in @events do
-    :ok
-  end
-
-  def parse(event, _params) do
-    {:invalid_event, event}
-  end
+  @callback parse(message_type :: atom, params :: map) :: {status :: atom,
+                                                           users :: list(map),
+                                                           message_config :: map}
 end

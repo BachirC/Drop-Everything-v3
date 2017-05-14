@@ -24,12 +24,13 @@ defmodule Dev3.SlackMessenger.HTTPClient do
 
   @bot_username "DEv3-Bot"
 
-  @message_type_modules %{watch_repos_response:     WatchReposResponse,
-                          unwatch_repos_response:   UnwatchReposResponse,
-                          no_args_response:         NoArgsResponse,
-                          review_requested:         ReviewRequested,
-                          review_submitted:         ReviewSubmitted,
-                          review_comment_submitted: ReviewCommentSubmitted}
+  @message_type_modules %{watch_repos_response:    WatchReposResponse,
+                          unwatch_repos_response:  UnwatchReposResponse,
+                          no_args_response:        NoArgsResponse,
+                          review_requested:        ReviewRequested,
+                          review_submitted:        ReviewSubmitted,
+                          tagged_in_issue:         TaggedInIssue,
+                          tagged_in_issue_comment: TaggedInIssueComment}
 
   @message_types Map.keys(@message_type_modules)
 

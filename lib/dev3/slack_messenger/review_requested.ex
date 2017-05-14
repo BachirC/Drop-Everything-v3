@@ -1,21 +1,23 @@
 defmodule Dev3.SlackMessenger.HTTPClient.ReviewRequested do
+  @moduledoc """
+    Defines the Slack message sent to a user when requested as reviewer for a pull request
+  """
+
   @behaviour Dev3.SlackMessenger.HTTPClient
 
   def build_message(data) do
-   %{text: "A Pull Request needs your Review", attachments: build_attachments(data)}
+   %{text: "", attachments: build_attachments(data)}
   end
 
   defp build_attachments(data) do
     [%{
-      "title" => "PR link",
-      "title_link" => "https://google.fr",
-      "text" => "",
-      "author_name" => "Me",
-      "author_icon" => "",
-      "footer" => "footer",
-      "footer_icon" => "",
-      "color" => "#ef0e02",
-      "ts" => 1494261981
+      title: "Review requested · Pull request ##{data.issue.number} · #{data.issue.title} · #{data.branches.head} -> #{data.branches.base}",
+      title_link: data.issue.url,
+      author_name: data.sender.name,
+      author_icon: data.sender.avatar_url,
+      footer: data.repo.name,
+      footer_icon: data.owner.avatar_url,
+      color: "#81adf4"
     }]
   end
 end
