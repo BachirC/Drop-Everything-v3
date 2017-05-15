@@ -7,15 +7,20 @@ defmodule Dev3.GitHub.WebhookParser.Real do
 
   alias Dev3.User
   alias Dev3.GitHub.WatchedRepo
+  alias Dev3.GitHub.SilencedIssue
 
   def parse(:review_requested, params) do
-    users = fetch_recipients(params["requested_reviewer"]["id"], params["repository"]["id"])
+    users = fetch_recipients(params["requested_reviewer"]["id"],
+                             params["repository"]["id"],
+                             params["pull_request"]["id"])
     data = parse_issue(params)
 
     {:ok, users, data}
   end
   def parse(:review_submitted, %{"review" => review} = params) do
-    users = fetch_recipients(params["pull_request"]["user"]["id"], params["repository"]["id"])
+    users = fetch_recipients(params["pull_request"]["user"]["id"],
+                             params["repository"]["id"],
+                             params["pull_request"]["id"])
     data = params
            |> parse_issue()
            |> Map.merge(%{review: %{state: String.to_atom(review["state"]),
@@ -25,13 +30,17 @@ defmodule Dev3.GitHub.WebhookParser.Real do
     {:ok, users, data}
   end
   def parse(:tagged_in_issue, params) do
-    users = fetch_tagged_users(params["issue"]["body"], params["repository"]["id"])
+    users = fetch_tagged_users(params["issue"]["body"],
+                               params["repository"]["id"],
+                               params["issue"]["id"])
     data = parse_issue(params)
 
     {:ok, users, data}
   end
   def parse(:tagged_in_issue_comment, %{"comment" => comment} = params) do
-    users = fetch_tagged_users(comment["body"], params["repository"]["id"])
+    users = fetch_tagged_users(comment["body"],
+                               params["repository"]["id"],
+                               params["issue"]["id"])
     data = params
            |> parse_issue()
            |> Map.merge(%{comment: %{url: comment["html_url"], body: comment["body"]}})
@@ -44,18 +53,18 @@ defmodule Dev3.GitHub.WebhookParser.Real do
 
   # Fetch targeted user (or users if a unique GitHub user has installed DEv3 on more than one Slack
   # team)
-  defp fetch_recipients(id, repo_id) do
+  defp fetch_recipients(id, repo_id, issue_id) do
     id
     |> User.list_by_github_id()
-    |> Enum.reject(fn user -> is_nil(WatchedRepo.retrieve_watched(user, repo_id)) end)
+    |> filter_issue_watchers(repo_id, issue_id)
   end
 
   # Fetch tagged users (mentioned by "@my_username" in GitHub issue description or comment)
-  defp fetch_tagged_users(body, repo_id) do
+  defp fetch_tagged_users(body, repo_id, issue_id) do
     body
     |> extract_github_user_ids()
     |> User.list_by_github_user_ids()
-    |> Enum.reject(fn user -> is_nil(WatchedRepo.retrieve_watched(user, repo_id)) end)
+    |> filter_issue_watchers(repo_id, issue_id)
   end
 
   defp extract_github_user_ids(body) do
@@ -63,6 +72,12 @@ defmodule Dev3.GitHub.WebhookParser.Real do
     |> String.split(" ")
     |> Enum.reject(fn word -> String.at(word, 0) != "@" end)
     |> Enum.map(fn word -> String.replace(word, ~r/(?![-])\p{P}/, "") end) # GitHub usernames allow simple hyphens
+  end
+
+  defp filter_issue_watchers(users, repo_id, issue_id) do
+    Enum.reject(users, fn user ->
+      !WatchedRepo.watched?(user, repo_id) or SilencedIssue.silenced?(user, issue_id)
+    end)
   end
 
   # All pull requests are considered issues by GitHub
