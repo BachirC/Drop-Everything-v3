@@ -1,6 +1,5 @@
 defmodule Dev3.Web.API.GitHub.WebhookController do
   use Dev3.Web, :controller
-  alias Dev3.GitHub.WebhookParser
 
   action_fallback Dev3.Web.API.GitHub.WebhookFallbackController
 

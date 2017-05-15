@@ -1,9 +1,6 @@
 defmodule Dev3.Web.API.Slack.WebhookControllerTest do
   use Dev3.Web.ConnCase
   import Dev3.Web.Router.Helpers
-  alias Dev3.Repo
-  alias Dev3.User
-  alias Dev3.GitHub.WatchedRepo
 
   @webhook_events Application.get_env(:dev3, GitHub)[:webhook_events]
   @message_type_by_action Application.get_env(:dev3, GitHub)[:message_type_by_action]
