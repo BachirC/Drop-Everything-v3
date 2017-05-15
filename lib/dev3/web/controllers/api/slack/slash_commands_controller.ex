@@ -13,6 +13,10 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
   @github_client   Application.get_env(:dev3, :github_client)
   @slack_messenger Application.get_env(:dev3, :slack_messenger)
 
+  def message_interaction(conn, params) do
+    conn |> send_resp(:ok, "Interacted")
+  end
+
   @doc """
     Endpoint for Slack /watchrepos command.
     The command takes a whitespace-separated list of github repos full_name (ex.: username/myrepo).

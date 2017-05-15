@@ -31,6 +31,8 @@ defmodule Dev3.Web.Router do
         post "/watchrepos", SlashCommandsController, :watch_repos
         post "/unwatchrepos", SlashCommandsController, :unwatch_repos
       end
+
+      post "/message_interaction", SlashCommandsController, :message_interaction
     end
   end
 
