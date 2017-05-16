@@ -10,7 +10,9 @@ defmodule Dev3.Mixfile do
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      aliases: aliases(),
-     deps: deps()]
+     deps: deps(),
+     test_coverage: [tool: ExCoveralls],
+     preferred_cli_env: ["coveralls": :test, "coveralls.detail": :test, "coveralls.post": :test, "coveralls.html": :test]]
   end
 
   # Configuration for the OTP application.
@@ -45,7 +47,8 @@ defmodule Dev3.Mixfile do
      {:oauth2, "~> 0.9"},
      {:tentacat, "~> 0.5"},
      {:slack, "~> 0.11.0"},
-     {:credo, "~> 0.7", only: [:dev, :test]}]
+     {:credo, "~> 0.7", only: [:dev, :test]},
+     {:excoveralls, "~> 0.6", only: :test}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
