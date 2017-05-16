@@ -3,20 +3,18 @@ defmodule Dev3.Web.API.Slack.MessageInteractionsController do
 
   alias Dev3.User
   alias Dev3.SlackMessenger.MessageInteractionsHandler
-  # action_fallback Dev3.Web.API.Slack.MessageInteractionsFallbackController
+
   plug :parse_params
   plug :verify_token
   plug :assign_user
 
-  @github_client   Application.get_env(:dev3, :github_client)
-  @slack_messenger Application.get_env(:dev3, :slack_messenger)
-
   def message_interaction(%{assigns: assigns} = conn, _params) do
-    action = assigns.params["actions"]
-             |> List.first()
-             |> Map.get("name")
-             |> String.to_atom()
-             |> MessageInteractionsHandler.handle(assigns.user, assigns.params)
+    assigns.params["actions"]
+    |> List.first()
+    |> Map.get("name")
+    |> String.to_atom()
+    |> MessageInteractionsHandler.handle(assigns.user, assigns.params)
+
     send_resp(conn, :ok, "")
   end
 
