@@ -34,7 +34,17 @@ defmodule Dev3.SlackMessenger.HTTPClient.ReviewSubmitted do
       author_icon: data.sender.avatar_url,
       footer: data.repo.name,
       footer_icon: data.owner.avatar_url,
-      color: "#366bc1"
+      color: "#366bc1",
+      callback_id: "issue_actions",
+      actions: [
+        %{name: "mute_issue",
+         text: "Mute PR",
+         type: "button",
+         value: Poison.encode!(%{repo_github_id: data.repo.id,
+                                 github_id:      data.issue.id,
+                                 title:          data.issue.title,
+                                 type:           data.issue.type})}
+      ]
     }
 
     [attachment]

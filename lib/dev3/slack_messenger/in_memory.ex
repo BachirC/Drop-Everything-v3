@@ -8,4 +8,8 @@ defmodule Dev3.SlackMessenger.InMemory do
   def notify(_message_type, _user, _data) do
     :ok
   end
+
+  def update_message(_user, _data) do
+    :ok
+  end
 end

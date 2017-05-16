@@ -7,7 +7,7 @@ defmodule Dev3.GitHub.WebhookParser.Real do
 
   alias Dev3.User
   alias Dev3.GitHub.WatchedRepo
-  alias Dev3.GitHub.SilencedIssue
+  alias Dev3.GitHub.MutedIssue
 
   def parse(:review_requested, params) do
     users = fetch_recipients(params["requested_reviewer"]["id"],
@@ -76,7 +76,7 @@ defmodule Dev3.GitHub.WebhookParser.Real do
 
   defp filter_issue_watchers(users, repo_id, issue_id) do
     Enum.reject(users, fn user ->
-      !WatchedRepo.watched?(user, repo_id) or SilencedIssue.silenced?(user, issue_id)
+      !WatchedRepo.watched?(user, repo_id) or MutedIssue.muted?(user, issue_id)
     end)
   end
 
@@ -98,15 +98,25 @@ defmodule Dev3.GitHub.WebhookParser.Real do
   defp parse_issue(%{"issue" => issue} = params) do
     parse_issue(issue, params)
   end
-  defp parse_issue(issue, params, type \\ :issue) do
+  defp parse_issue(issue, params, issue_type \\ :issue) do
     %{"login" => sender_name, "avatar_url" => sender_avatar_url} = params["sender"]
-    %{"full_name" => repo_name, "html_url" => repo_url} = params["repository"]
-    %{"number" => issue_number, "html_url" => issue_url, "title" => issue_title, "body" => issue_body} = issue
+    %{"id" => repo_id, "full_name" => repo_name, "html_url" => repo_url} = params["repository"]
+    %{"id" => issue_id,
+      "number" => issue_number,
+      "html_url" => issue_url,
+      "title" => issue_title,
+      "body" => issue_body} = issue
+
     owner_avatar_url = params["repository"]["owner"]["avatar_url"]
 
-    %{issue: %{type: type, number: issue_number, url: issue_url, title: issue_title, body: issue_body},
+    %{issue: %{id: issue_id,
+               type: issue_type,
+               number: issue_number,
+               url: issue_url,
+               title: issue_title,
+               body: issue_body},
       sender: %{name: sender_name, avatar_url: sender_avatar_url},
-      repo: %{name: repo_name, url: repo_url},
+      repo: %{id: repo_id, name: repo_name, url: repo_url},
       owner: %{avatar_url: owner_avatar_url}}
   end
 end

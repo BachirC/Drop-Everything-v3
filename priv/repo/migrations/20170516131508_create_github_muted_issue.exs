@@ -1,8 +1,8 @@
-defmodule Dev3.Repo.Migrations.CreateDev3.GitHub.SilencedIssue do
+defmodule Dev3.Repo.Migrations.CreateDev3.GitHub.MutedIssue do
   use Ecto.Migration
 
   def change do
-    create table(:silenced_issues) do
+    create table(:muted_issues) do
       add :title, :string, null: false
       add :github_id, :integer, null: false
 
@@ -12,7 +12,8 @@ defmodule Dev3.Repo.Migrations.CreateDev3.GitHub.SilencedIssue do
       timestamps()
     end
 
-    create index(:silenced_issues, [:user_id])
-    create index(:silenced_issues, [:repo_id])
+    create index(:muted_issues, [:user_id])
+    create index(:muted_issues, [:repo_id])
+    create unique_index(:muted_issues, [:user_id, :github_id])
   end
 end

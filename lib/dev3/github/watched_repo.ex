@@ -21,6 +21,14 @@ defmodule Dev3.GitHub.WatchedRepo do
     Repo.all(query)
   end
 
+  def retrieve(user, github_id) do
+    query = from repo in __MODULE__,
+            where: repo.user_id == type(^user.id, Ecto.UUID) and repo.github_id == ^github_id,
+            select: repo.id
+
+    Repo.one(query)
+  end
+
   def watched?(user, github_id) do
     query = from repo in __MODULE__,
             where: repo.user_id == type(^user.id, Ecto.UUID) and repo.github_id == ^github_id,
@@ -28,6 +36,7 @@ defmodule Dev3.GitHub.WatchedRepo do
 
     !is_nil(Repo.one(query))
   end
+
   @doc """
     Start watching repos by the user.
     All incoming GitHub webhooks from these repos that reference the user will be dispatched

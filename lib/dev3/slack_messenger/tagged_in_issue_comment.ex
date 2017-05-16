@@ -15,7 +15,17 @@ defmodule Dev3.SlackMessenger.HTTPClient.TaggedInIssueComment do
       author_icon: data.sender.avatar_url,
       footer: data.repo.name,
       footer_icon: data.owner.avatar_url,
-      color: "#a7c7f9"
+      color: "#a7c7f9",
+      callback_id: "issue_actions",
+      actions: [
+        %{name: "mute_issue",
+         text: "Mute #{humanize(data.issue.type)}",
+         type: "button",
+         value: Poison.encode!(%{repo_github_id: data.repo.id,
+                                 github_id:      data.issue.id,
+                                 title:          data.issue.title,
+                                 type:           data.issue.type})}
+      ]
     }]
   end
 

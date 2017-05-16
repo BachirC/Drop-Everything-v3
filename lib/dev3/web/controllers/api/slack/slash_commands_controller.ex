@@ -13,10 +13,6 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
   @github_client   Application.get_env(:dev3, :github_client)
   @slack_messenger Application.get_env(:dev3, :slack_messenger)
 
-  def message_interaction(conn, params) do
-    conn |> send_resp(:ok, "Interacted")
-  end
-
   @doc """
     Endpoint for Slack /watchrepos command.
     The command takes a whitespace-separated list of github repos full_name (ex.: username/myrepo).
@@ -54,7 +50,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     repos_not_found = args -- watched_repos
     repos_status = %{unwatched: args -- repos_not_found, not_found: repos_not_found}
 
-      with {_, nil}     <- WatchedRepo.delete_unwatched(user, args),
+      with {_, nil} <- WatchedRepo.delete_unwatched(user, args),
         :ok <- @slack_messenger.notify(:unwatch_repos_response, user, repos_status) do
         send_resp(conn, :ok, "/unwatchrepos successful")
       end

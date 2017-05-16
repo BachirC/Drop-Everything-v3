@@ -17,10 +17,10 @@ defmodule Dev3.SlackMessenger.HTTPClient do
 
   #===================================================================================#
 
+  alias Dev3.SlackBot
+
   @behaviour Dev3.SlackMessenger
   @callback build_message(data :: list(binary)) :: binary
-
-  alias Dev3.SlackBot
 
   @bot_username "DEv3-Bot"
 
@@ -51,5 +51,18 @@ defmodule Dev3.SlackMessenger.HTTPClient do
 
   def notify(message_type, _user, _data) do
     {:unknown_message_type, message_type}
+  end
+
+  def update_message(user, %{attachments: attachments, params: params}) do
+    with %{slack_access_token: bot_token} = SlackBot.retrieve_bot(user),
+      %{"ok" => true} <- Slack.Web.Chat.update(params["channel"]["id"],
+                          "",
+                          params["original_message"]["ts"],
+                          %{token: bot_token,
+                            attachments: Poison.encode!(attachments),
+                            username: @bot_username,
+                            replace_original: true}) do
+      :ok
+    end
   end
 end
