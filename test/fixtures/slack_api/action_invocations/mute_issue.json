@@ -1,0 +1,59 @@
+{
+  "actions":[
+    {
+      "name":"mute_issue",
+      "type":"button",
+      "value":"{\"type\":\"pull_request\", \"title\":\"More dummy text\", \"repo_github_id\":1, \"github_id\":1}"
+    }
+  ],
+  "callback_id":"issue_actions",
+  "team":{
+    "id":"ST1",
+    "domain":"team_domain"
+  },
+  "channel":{
+    "id":"channel_id",
+    "name":"directmessage"
+  },
+  "user":{
+    "id":"SU1",
+    "name":"bachir"
+  },
+  "action_ts":"1495019361.226665",
+  "message_ts":"1495019112.945270",
+  "attachment_id":"1",
+  "token":"secret_token",
+  "is_app_unfurl":false,
+  "original_message":{
+    "text":"",
+    "username":"DEv3-Bot",
+    "bot_id":"SBU1",
+    "attachments":[
+      {
+        "author_name":"BachirC",
+        "callback_id":"issue_actions",
+        "fallback":"You have been mentioned \u00b7 Pull request #58 \u00b7 More dummy text",
+        "title":"You have been mentioned \u00b7 Pull request #58 \u00b7 More dummy text",
+        "footer":"DropEverythingOrg\/DummyRepo",
+        "id":1,
+        "title_link":"https:\/\/github.com\/fancy\/url",
+        "author_icon":"https:\/\/avatars3.githubusercontent.com\/u\/7337242?v=3",
+        "footer_icon":"https:\/\/avatars0.githubusercontent.com\/u\/27590286?v=3",
+        "color":"a7c7f9",
+        "actions":[
+          {
+            "id":"1",
+            "name":"mute_issue",
+            "text":"Mute Pull request",
+            "type":"button",
+            "value":"{\"type\":\"pull_request\", \"title\":\"More dummy text\", \"repo_github_id\":1, \"github_id\":1}",
+            "style":""
+          }
+        ]
+      }
+    ],
+    "type":"message",
+    "subtype":"bot_message",
+    "ts":"1495019112.945270"},
+    "response_url":"https:\/\/hooks.slack.com\/some\/cool\/url"
+}

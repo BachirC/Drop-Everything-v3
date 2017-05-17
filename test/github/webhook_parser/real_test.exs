@@ -11,7 +11,7 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
   end
 
   test "returns an error when message_type not handled" do
-    assert Real.parse(:action_non_handled, %{}) == {:unhandled_message_type, :action_non_handled}
+    assert Real.parse(:action_not_handled, %{}) == {:unhandled_message_type, :action_not_handled}
   end
 
   test "review_requested" do
