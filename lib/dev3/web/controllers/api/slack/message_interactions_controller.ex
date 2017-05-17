@@ -2,7 +2,8 @@ defmodule Dev3.Web.API.Slack.MessageInteractionsController do
   use Dev3.Web, :controller
 
   alias Dev3.User
-  alias Dev3.SlackMessenger.MessageInteractionsHandler
+  alias Dev3.SlackMessenger.MessageInteractionsParser
+  @slack_messenger Application.get_env(:dev3, :slack_messenger)
 
   plug :parse_params
   plug :verify_token
@@ -13,7 +14,8 @@ defmodule Dev3.Web.API.Slack.MessageInteractionsController do
     |> List.first()
     |> Map.get("name")
     |> String.to_atom()
-    |> MessageInteractionsHandler.handle(assigns.user, assigns.params)
+    |> MessageInteractionsParser.parse(assigns.user, assigns.params)
+    |> @slack_messenger.update_message(assigns.user)
 
     send_resp(conn, :ok, "")
   end

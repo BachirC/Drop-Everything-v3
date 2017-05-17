@@ -53,7 +53,7 @@ defmodule Dev3.SlackMessenger.HTTPClient do
     {:unknown_message_type, message_type}
   end
 
-  def update_message(user, %{attachments: attachments, params: params}) do
+  def update_message(%{attachments: attachments, params: params}, user) do
     with %{slack_access_token: bot_token} = SlackBot.retrieve_bot(user),
       %{"ok" => true} <- Slack.Web.Chat.update(params["channel"]["id"],
                           "",

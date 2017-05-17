@@ -1,13 +1,12 @@
-defmodule Dev3.SlackMessenger.MessageInteractionsHandler do
+defmodule Dev3.SlackMessenger.MessageInteractionsParser do
   @moduledoc """
-    Handles message interactions within Slack
+    Handles parsing for message interactions within Slack
   """
 
   alias Dev3.GitHub.WatchedRepo
   alias Dev3.GitHub.MutedIssue
-  @slack_messenger Application.get_env(:dev3, :slack_messenger)
 
-  def handle(:mute_issue, user, %{"original_message" => original_message} = params) do
+  def parse(:mute_issue, user, %{"original_message" => original_message} = params) do
     issue_data = extract_action_value(params)
     repo_id = WatchedRepo.retrieve(user, issue_data["repo_github_id"])
 
@@ -17,14 +16,13 @@ defmodule Dev3.SlackMessenger.MessageInteractionsHandler do
     |> MutedIssue.mute()
 
     attachments = update_action(original_message, %{"name"  => "unmute_issue",
-                                                         "text"  => "Unmute",
-                                                         "value" => Poison.encode!(issue_data)})
+                                                    "text"  => "Unmute",
+                                                    "value" => Poison.encode!(issue_data)})
 
-    full_params = %{attachments: [attachments], params: params}
-    @slack_messenger.update_message(user, full_params)
+    %{attachments: [attachments], params: params}
   end
 
-  def handle(:unmute_issue, user, %{"original_message" => original_message} = params) do
+  def parse(:unmute_issue, user, %{"original_message" => original_message} = params) do
     issue_data = extract_action_value(params)
 
     issue_data
@@ -32,15 +30,14 @@ defmodule Dev3.SlackMessenger.MessageInteractionsHandler do
     |> MutedIssue.unmute()
 
     attachments = update_action(original_message, %{"name"  => "mute_issue",
-                                                         "text"  => "Mute #{humanize(issue_data["type"])}",
-                                                         "value" => Poison.encode!(issue_data)})
+                                                    "text"  => "Mute #{humanize(issue_data["type"])}",
+                                                    "value" => Poison.encode!(issue_data)})
 
-    full_params = %{attachments: [attachments], params: params}
-    @slack_messenger.update_message(user, full_params)
+    %{attachments: [attachments], params: params}
   end
 
-  def handle(action, _params) do
-    raise "Can't handle action #{action} in #{__MODULE__}"
+  def parse(action, _params) do
+    raise "Can't parse action #{action} in #{__MODULE__}"
   end
 
   defp extract_action_value(params) do
