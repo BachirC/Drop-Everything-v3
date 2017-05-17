@@ -10,7 +10,7 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
   end
 
   test "review_requested" do
-    user = insert_user()
+    user = Repo.insert!(%User{github_id: 1, slack_team_id: "ST1", slack_user_id: "SU1", slack_access_token: "SAT1"})
     repo = insert_watched_repo(user)
     payload = Path.expand("../../fixtures/github_api/webhooks/pull_request/review_requested.json", __DIR__)
               |> File.read!()
@@ -122,10 +122,6 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
 
   test "returns an error when message_type not found" do
     assert Real.parse(:action_non_handled, %{}) == {:unhandled_message_type, :action_non_handled}
-  end
-
-  defp insert_user() do
-    Repo.insert!(%User{github_id: 1, slack_team_id: "ST1", slack_user_id: "SU1", slack_access_token: "SAT1"})
   end
 
   defp insert_watched_repo(user) do
