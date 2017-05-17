@@ -10,7 +10,7 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Repo)
   end
 
-  test "returns an error when message_type not found" do
+  test "returns an error when message_type not handled" do
     assert Real.parse(:action_non_handled, %{}) == {:unhandled_message_type, :action_non_handled}
   end
 
