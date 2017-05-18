@@ -18,6 +18,7 @@ defmodule Dev3.Application do
       supervisor(Dev3.Web.Endpoint, []),
       # Start your own worker by calling: Dev3.Worker.start_link(arg1, arg2, arg3)
       # worker(Dev3.Worker, [arg1, arg2, arg3]),
+      supervisor(Task.Supervisor, [[name: Dev3.TaskSupervisor, restart: :transient]])
     ]
 
     # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html

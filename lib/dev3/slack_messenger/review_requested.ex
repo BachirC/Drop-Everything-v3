@@ -21,7 +21,7 @@ defmodule Dev3.SlackMessenger.HTTPClient.ReviewRequested do
       callback_id: "issue_actions",
       actions: [
         %{name: "mute_issue",
-         text: "Mute PR",
+         text: "Mute Pull request",
          type: "button",
          value: Poison.encode!(%{repo_github_id: data.repo.id,
                                  github_id:      data.issue.id,

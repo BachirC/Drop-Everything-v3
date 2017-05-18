@@ -1,8 +1,5 @@
 defmodule Dev3.SlackMessenger.HTTPClient.ReviewSubmitted do
-  @moduledoc """
-    Defines the Slack message sent to a user when a review is submitted to one of his/her
-    pull requests
-  """
+  @moduledoc false
 
   @behaviour Dev3.SlackMessenger.HTTPClient
   @status_emojis %{approved:          ":white_check_mark:",
@@ -38,7 +35,7 @@ defmodule Dev3.SlackMessenger.HTTPClient.ReviewSubmitted do
       callback_id: "issue_actions",
       actions: [
         %{name: "mute_issue",
-         text: "Mute PR",
+         text: "Mute Pull request",
          type: "button",
          value: Poison.encode!(%{repo_github_id: data.repo.id,
                                  github_id:      data.issue.id,

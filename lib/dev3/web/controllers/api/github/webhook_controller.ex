@@ -5,15 +5,11 @@ defmodule Dev3.Web.API.GitHub.WebhookController do
 
   plug :dispatch_by_action
 
-  @slack_messenger Application.get_env(:dev3, :slack_messenger)
-  @webhook_parser Application.get_env(:dev3, :webhook_parser)
   @message_type_by_action Application.get_env(:dev3, GitHub)[:message_type_by_action]
 
   def webhook(%{assigns: %{message_type: message_type}} = conn, params) do
-    with {:ok, users, message_params} <- @webhook_parser.parse(message_type, params) do
-      Enum.each(users, fn user -> @slack_messenger.notify(message_type, user, message_params) end)
-      send_resp(conn, :ok, "Messages sent !")
-    end
+    Dev3.Tasks.WebhookHandler.start(message_type, params)
+    send_resp(conn, :ok, "Messages sent !")
   end
 
   defp dispatch_by_action(conn, _) do

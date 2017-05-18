@@ -54,6 +54,8 @@ defmodule Dev3.Web.API.Slack.SlashCommandsControllerTest do
                               "/watchrepos",
                               "John/elixir-lang Sara/ex-http-client Org/private-repo Paul/non-existant")
 
+      :timer.sleep(100)
+
       refute conn.halted
       assert conn.status == Plug.Conn.Status.code(:ok)
       assert conn.resp_body == "/watchrepos successful"
@@ -66,6 +68,8 @@ defmodule Dev3.Web.API.Slack.SlashCommandsControllerTest do
       user = insert_user()
       insert_watched_repos(user)
       conn = build_valid_conn(:unwatch_repos, user, "/unwatchrepos", "Josh/to-be-unwatched Joe/not-watched")
+
+      :timer.sleep(100)
 
       refute conn.halted
       assert conn.status == Plug.Conn.Status.code(:ok)

@@ -1,7 +1,5 @@
 defmodule Dev3.SlackMessenger.MessageInteractionsParser do
-  @moduledoc """
-    Handles parsing for message interactions within Slack
-  """
+  @moduledoc false
 
   alias Dev3.GitHub.WatchedRepo
   alias Dev3.GitHub.MutedIssue

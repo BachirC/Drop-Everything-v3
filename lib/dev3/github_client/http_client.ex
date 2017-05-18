@@ -37,7 +37,7 @@ defmodule Dev3.GitHubClient.HTTPClient do
 
   defp create_webhook(client, repo) do
     # TODO: Use path helper
-    url = "https://fcc16f32.ngrok.io/api/github/webhook"
+    url = "https://bf628e6f.ngrok.io/api/github/webhook"
     body = [
       name: "web",
       active: true,
