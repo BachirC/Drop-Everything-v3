@@ -50,7 +50,8 @@ defmodule Dev3.Mixfile do
      {:credo, "~> 0.7", only: [:dev, :test]},
      {:excoveralls, "~> 0.6", only: :test},
      {:exq, "~> 0.8.6"},
-     {:exq_ui, "~> 0.8.6"}]
+     {:exq_ui, "~> 0.8.6"},
+     {:exrm, "~> 1.0"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
