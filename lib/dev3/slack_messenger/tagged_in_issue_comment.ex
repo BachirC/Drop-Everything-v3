@@ -3,36 +3,30 @@ defmodule Dev3.SlackMessenger.HTTPClient.TaggedInIssueComment do
 
   @behaviour Dev3.SlackMessenger.HTTPClient
 
+  import Dev3.SlackMessenger.MessageBuilder
+
   def build_message(data) do
     %{text: "", attachments: build_attachments(data)}
   end
 
   defp build_attachments(data) do
-    [%{
-      title: "You have been mentioned · #{humanize(data.issue.type)} ##{data.issue.number} · #{data.issue.title}",
-      title_link: data.comment.url,
-      author_name: data.sender.name,
-      author_icon: data.sender.avatar_url,
-      footer: data.repo.name,
-      footer_icon: data.owner.avatar_url,
-      color: "#a7c7f9",
-      callback_id: "issue_actions",
-      actions: [
-        %{name: "mute_issue",
-         text: "Mute #{humanize(data.issue.type)}",
-         type: "button",
-         value: Poison.encode!(%{repo_github_id: data.repo.id,
-                                 github_id:      data.issue.id,
-                                 title:          data.issue.title,
-                                 type:           data.issue.type})}
-      ]
-    }]
+    attachment = data
+                 |> base_attachment()
+                 |> add_action(:snooze, data)
+                 |> add_action(:mute_issue, data)
+
+    [attachment]
   end
 
-  defp humanize(string) do
-    string
-    |> to_string()
-    |> String.replace("_", " ")
-    |> String.capitalize()
+  def base_attachment(data) do
+    %{title: "You have been mentioned · #{humanize(data.issue.type)} ##{data.issue.number} · #{data.issue.title}",
+     title_link: data.comment.url,
+     author_name: data.sender.name,
+     author_icon: data.sender.avatar_url,
+     footer: data.repo.name,
+     footer_icon: data.owner.avatar_url,
+     color: "#a7c7f9",
+     callback_id: "issue_actions",
+     actions: []}
   end
 end

@@ -9,7 +9,11 @@ defmodule Dev3.SlackMessenger.InMemory do
     :ok
   end
 
-  def update_message(_data, _user) do
+  def update(_data, _user) do
+    :ok
+  end
+
+  def deliver(_data, _user) do
     :ok
   end
 end

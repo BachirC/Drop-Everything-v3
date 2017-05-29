@@ -33,7 +33,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     It stops watching every repo given by the user but the corresponding webhooks are not
     deleted !
   """
-  def unwatch_repos(%{assigns: %{user: user, args: args}} = conn, _params) do
+  def unwatch_repos(conn, _params) do
     Dev3.Tasks.UnwatchReposHandler.start(conn.assigns)
     send_resp(conn, :ok, "/unwatchrepos successful")
   end

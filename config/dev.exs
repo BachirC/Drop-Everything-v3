@@ -76,3 +76,22 @@ config :oauth2, debug: true
 config :dev3, :github_client, Dev3.GitHubClient.HTTPClient
 config :dev3, :slack_messenger, Dev3.SlackMessenger.HTTPClient
 config :dev3, :webhook_parser, Dev3.GitHub.WebhookParser.Real
+
+config :exq,
+  name: Exq,
+  host: "127.0.0.1",
+  port: 6379,
+  namespace: "exq",
+  concurrency: :infinite,
+  queues: ["slack_messages"],
+  poll_timeout: 50,
+  scheduler_poll_timeout: 200,
+  scheduler_enable: true,
+  max_retries: 1,
+  shutdown_timeout: 5000
+
+
+config :exq_ui,
+  web_port: 4050,
+  web_namespace: "",
+  server: true

@@ -22,7 +22,7 @@ defmodule Dev3.SlackMessenger.HTTPClient do
   @behaviour Dev3.SlackMessenger
   @callback build_message(data :: list(binary)) :: binary
 
-  @bot_username "DEv3-Bot"
+  @bot_username Application.get_env(:dev3, :bot_username)
 
   @message_type_modules %{watch_repos_response:    WatchReposResponse,
                           unwatch_repos_response:  UnwatchReposResponse,
@@ -35,25 +35,27 @@ defmodule Dev3.SlackMessenger.HTTPClient do
   @message_types Map.keys(@message_type_modules)
 
   def notify(message_type, user, data) when message_type in @message_types do
-    with %{slack_access_token: bot_token} <- SlackBot.retrieve_bot(user),
-      message <- apply(Module.concat([__MODULE__, @message_type_modules[message_type]]),
-                      :build_message,
-                      [data]),
-      %{"channel" => %{"id" => channel_id}} <- Slack.Web.Im.open(user.slack_user_id, %{token: bot_token}),
-      %{"ok" => true} <- Slack.Web.Chat.post_message(channel_id,
-                                                     message.text,
-                                                     %{token: bot_token,
-                                                       attachments: Poison.encode!(message.attachments),
-                                                       username: @bot_username}) do
-        :ok
-    end
+    data
+    |> Module.concat([__MODULE__, @message_type_modules[message_type]]).build_message()
+    |> deliver(user)
   end
-
   def notify(message_type, _user, _data) do
     {:unknown_message_type, message_type}
   end
 
-  def update_message(%{attachments: attachments, params: params}, user) do
+  def deliver(%{text: text, attachments: attachments}, user) do
+    with %{slack_access_token: bot_token} <- SlackBot.retrieve_bot(user),
+    %{"channel" => %{"id" => channel_id}} <- Slack.Web.Im.open(user.slack_user_id, %{token: bot_token}),
+    %{"ok" => true} <- Slack.Web.Chat.post_message(channel_id,
+                                                   text,
+                                                   %{token: bot_token,
+                                                    attachments: Poison.encode!(attachments),
+                                                    username: @bot_username}) do
+      :ok
+    end
+  end
+
+  def update(%{attachments: attachments, params: params}, user) do
     with %{slack_access_token: bot_token} = SlackBot.retrieve_bot(user),
       %{"ok" => true} <- Slack.Web.Chat.update(params["channel"]["id"],
                           "",

@@ -2,6 +2,9 @@ defmodule Dev3.SlackMessenger.HTTPClient.ReviewSubmitted do
   @moduledoc false
 
   @behaviour Dev3.SlackMessenger.HTTPClient
+
+  import Dev3.SlackMessenger.MessageBuilder
+
   @status_emojis %{approved:          ":white_check_mark:",
                    commented:         ":thinking_face:",
                    changes_requested: ":x:"}
@@ -24,26 +27,23 @@ defmodule Dev3.SlackMessenger.HTTPClient.ReviewSubmitted do
   end
 
   defp build_attachments(data) do
-    attachment = %{
-      title: @status_emojis[data.review.state] <> build_text(data.review.state, data),
-      title_link: data.review.url,
-      author_name: data.sender.name,
-      author_icon: data.sender.avatar_url,
-      footer: data.repo.name,
-      footer_icon: data.owner.avatar_url,
-      color: "#366bc1",
-      callback_id: "issue_actions",
-      actions: [
-        %{name: "mute_issue",
-         text: "Mute Pull request",
-         type: "button",
-         value: Poison.encode!(%{repo_github_id: data.repo.id,
-                                 github_id:      data.issue.id,
-                                 title:          data.issue.title,
-                                 type:           data.issue.type})}
-      ]
-    }
+    attachment = data
+                 |> base_attachment()
+                 |> add_action(:snooze, data)
+                 |> add_action(:mute_issue, data)
 
     [attachment]
+  end
+
+  defp base_attachment(data) do
+    %{title: @status_emojis[data.review.state] <> build_text(data.review.state, data),
+     title_link: data.review.url,
+     author_name: data.sender.name,
+     author_icon: data.sender.avatar_url,
+     footer: data.repo.name,
+     footer_icon: data.owner.avatar_url,
+     color: "#366bc1",
+     callback_id: "issue_actions",
+     actions: []}
   end
 end
