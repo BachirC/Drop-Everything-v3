@@ -1,4 +1,4 @@
-defmodule Slack do
+defmodule Dev3.Web.OAuth.Slack do
   @moduledoc """
   An OAuth2 strategy for GitHub.
   """

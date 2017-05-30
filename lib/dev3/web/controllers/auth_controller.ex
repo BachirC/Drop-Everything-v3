@@ -3,6 +3,8 @@ defmodule Dev3.Web.AuthController do
 
   alias Dev3.User
   alias Dev3.SlackBot
+  alias Dev3.Web.OAuth.GitHub
+  alias Dev3.Web.OAuth.Slack
 
   action_fallback Dev3.Web.AuthFallbackController
 

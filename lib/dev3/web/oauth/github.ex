@@ -1,4 +1,4 @@
-defmodule GitHub do
+defmodule Dev3.Web.OAuth.GitHub do
   @moduledoc """
   An OAuth2 strategy for GitHub.
   """
