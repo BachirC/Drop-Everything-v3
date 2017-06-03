@@ -19,7 +19,7 @@ config :dev3, Dev3.Web.Endpoint,
   # that (re)starts the app
   http: [port: {:system, "PORT"}],
   url: [scheme: "http", host: "dev3.bachirc.me", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
+  cache_static_manifest: "priv/static/cache_manifest.json",
   # configuration for Distillery release
   root: ".",
   server: true,
