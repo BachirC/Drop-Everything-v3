@@ -7,7 +7,7 @@ jobs:
     working_directory: ~/dev3
     docker:
       - image: trenpixster/elixir:1.4.1
-      - image: postgres:9.6
+      - image: postgres:9.5
         environment:
           POSTGRES_USER: postgres
     steps:
