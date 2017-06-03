@@ -15,11 +15,18 @@ use Mix.Config
 # which you typically run after static files are built.
 config :dev3, Dev3.Web.Endpoint,
   on_init: {Demo.Web.Endpoint, :load_from_system_env, []},
-  url: [host: "example.com", port: 80],
+  # the PORT env variable will be set by Gatling in the init script of the service
+  # that (re)starts the app
+  http: [port: {:system, "PORT"}],
+  url: [scheme: "http", host: "dev3.bachirc.me", port: 80],
   cache_static_manifest: "priv/static/cache_manifest.json"
+  # configuration for Distillery release
+  root: ".",
+  server: true,
+  version: Mix.Project.config[:version]
 
 # Do not print debug messages in production
-config :logger, level: :info
+config :logger, level: :warn
 config :dev3, :github_client, Dev3.GitHubClient.HTTPClient
 config :dev3, :slack_messenger, Dev3.SlackMessenger.HTTPClient
 
@@ -28,14 +35,23 @@ config :dev3, :slack_messenger, Dev3.SlackMessenger.HTTPClient
 # To get SSL working, you will need to add the `https` key
 # to the previous section and set your `:url` port to 443:
 #
-#     config :dev3, Dev3.Web.Endpoint,
+config :dev3, Dev3.Web.Endpoint,
+  secret_key_base: System.get_env("SECRET_KEY_BASE")
+
+# Configure your database
+config :dev3, Dev3.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: System.get_env("DB_USERNAME"),
+  password: System.get_env("DB_PASSWORD"),
+  database: System.get_env("DB_DATABASE"),
+  hostname: System.get_env("DB_HOSTNAME"),
+  pool_size: 16
 #       ...
 #       url: [host: "example.com", port: 443],
 #       https: [:inet6,
 #               port: 443,
 #               keyfile: System.get_env("SOME_APP_SSL_KEY_PATH"),
 #               certfile: System.get_env("SOME_APP_SSL_CERT_PATH")]
-#
 # Where those two env variables return an absolute path to
 # the key and cert in disk or a relative path inside priv,
 # for example "priv/ssl/server.key".
@@ -53,7 +69,7 @@ config :dev3, :slack_messenger, Dev3.SlackMessenger.HTTPClient
 # If you are doing OTP releases, you need to instruct Phoenix
 # to start the server for all endpoints:
 #
-#     config :phoenix, :serve_endpoints, true
+config :phoenix, :serve_endpoints, true
 #
 # Alternatively, you can configure exactly which server to
 # start per endpoint:
@@ -63,4 +79,4 @@ config :dev3, :slack_messenger, Dev3.SlackMessenger.HTTPClient
 
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
-import_config "prod.secret.exs"
+# import_config "prod.secret.exs"

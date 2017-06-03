@@ -51,7 +51,7 @@ defmodule Dev3.Mixfile do
      {:excoveralls, "~> 0.6", only: :test},
      {:exq, "~> 0.8.6"},
      {:exq_ui, "~> 0.8.6"},
-     {:exrm, "~> 1.0"}]
+     {:distillery, "~> 1.4"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
