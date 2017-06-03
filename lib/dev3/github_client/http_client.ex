@@ -32,7 +32,6 @@ defmodule Dev3.GitHubClient.HTTPClient do
   end
 
   defp create_webhook(client, repo) do
-    # TODO: Use path helper
     url = "#{Dev3.Web.Router.Helpers.url(Dev3.Web.Endpoint)}/api/github/webhook"
     body = [
       name: "web",
