@@ -2,9 +2,6 @@ version: 2
 machine:
   services:
     - redis
-dependencies:
-  override:
-    - sudo service redis-server status || sudo service redis-server start
 jobs:
   build:
     working_directory: ~/dev3
@@ -18,5 +15,8 @@ jobs:
       - run: mix deps.get
       - run: mix test
 test:
+  pre:
+    - echo "In test PREEE"
+    - sudo service redis-server start
   override:
     - mix coveralls.circle
