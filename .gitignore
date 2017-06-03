@@ -35,3 +35,12 @@ npm-debug.log
 .env
 
 .iex.exs
+
+# Prod
+domains
+upgrade.exs
+deploy.exs
+rel/
+package-lock.json
+/node_modules
+brunch-config.js
