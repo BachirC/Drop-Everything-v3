@@ -92,6 +92,6 @@ config :exq,
 
 
 config :exq_ui,
-  web_port: 4050,
+  web_port: 4040,
   web_namespace: "",
   server: true
