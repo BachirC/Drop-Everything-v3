@@ -39,6 +39,6 @@ defmodule Dev3.Web.Router do
   scope "/", Dev3.Web do
     pipe_through :browser # Use the default browser stack
 
-    get "/", PageController, :index
+    get "/", Dev3Controller, :index
   end
 end
