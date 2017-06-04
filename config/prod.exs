@@ -18,7 +18,7 @@ config :dev3, Dev3.Web.Endpoint,
   # the PORT env variable will be set by Gatling in the init script of the service
   # that (re)starts the app
   http: [port: {:system, "PORT"}],
-  url: [scheme: "http", host: "api.dev3.bachirc.me", port: 80],
+  url: [scheme: "https", host: "api.dev3.bachirc.me", port: 443],
   # cache_static_manifest: "priv/static/cache_manifest.json",
   # configuration for Distillery release
   root: ".",
