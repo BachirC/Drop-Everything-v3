@@ -1,13 +1,7 @@
 version: 2
-dependencies:
-  pre:
-    - echo "In dep PREEE"
-    - gem install bundler --pre
-    - wget http://download.redis.io/releases/redis-3.2.0.tar.gz
-    - tar xzf redis-3.2.0.tar.gz
-    - cd redis-3.2.0 && make
-  cache_directories:
-    - redis-3.2.0
+machine:
+  services:
+    - redis
 jobs:
   build:
     working_directory: ~/dev3
@@ -21,8 +15,5 @@ jobs:
       - run: mix deps.get
       - run: mix test
 test:
-  pre:
-    - echo "In test PREEE"
-    - sudo service redis-server start
   override:
     - mix coveralls.circle
