@@ -20,7 +20,18 @@ defmodule Dev3.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Dev3.Application, []},
-     extra_applications: [:logger, :oauth2, :httpoison, :tentacat, :slack, :exq, :exq_ui]]
+     extra_applications: [:logger,
+                          :oauth2,
+                          :httpoison,
+                          :tentacat,
+                          :slack,
+                          :exq,
+                          :exq_ui,
+                          :prometheus_ex,
+                          :prometheus_ecto,
+                          :prometheus_phoenix,
+                          :prometheus_plugs,
+                          :prometheus_process_collector]]
   end
 
   # Specifies which paths to compile per environment.
@@ -31,7 +42,7 @@ defmodule Dev3.Mixfile do
   #
   # Type `mix help deps` for examples and options.
   defp deps do
-    [{:phoenix, "~> 1.3.0-rc"},
+    [{:phoenix, "~> 1.3.0-rc", override: true},
      {:phoenix_pubsub, "~> 1.0"},
      {:phoenix_ecto, "~> 3.2"},
      {:postgrex, ">= 0.0.0"},
@@ -51,7 +62,12 @@ defmodule Dev3.Mixfile do
      {:excoveralls, "~> 0.6", only: :test},
      {:exq, "~> 0.8.6"},
      {:exq_ui, "~> 0.8.6"},
-     {:distillery, "~> 1.4"}]
+     {:distillery, "~> 1.4"},
+     {:prometheus_ex, "~> 1.0"},
+     {:prometheus_ecto, "~> 1.0"},
+     {:prometheus_phoenix, "~> 1.0"},
+     {:prometheus_plugs, "~> 1.0"},
+     {:prometheus_process_collector, "~> 1.0"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

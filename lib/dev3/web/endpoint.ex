@@ -38,6 +38,10 @@ defmodule Dev3.Web.Endpoint do
     key: "_dev3_key",
     signing_salt: "vifS+z13"
 
+  # Monitoring config
+  plug Dev3.PrometheusExporter     # makes the /metrics URL happen
+  plug Dev3.PipelineInstrumenter   # measures pipeline exec times
+
   plug Dev3.Web.Router
 
   @doc """
