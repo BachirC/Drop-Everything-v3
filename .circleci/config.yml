@@ -1,10 +1,10 @@
 version: 2
-machine:
-  services:
-    - redis
 jobs:
   build:
     working_directory: ~/dev3
+    machine:
+      services:
+        - redis
     docker:
       - image: trenpixster/elixir:1.4.1
       - image: postgres:9.5
@@ -14,6 +14,6 @@ jobs:
       - checkout
       - run: mix deps.get
       - run: mix test
-test:
-  override:
-    - mix coveralls.circle
+  test:
+    override:
+      - mix coveralls.circle
