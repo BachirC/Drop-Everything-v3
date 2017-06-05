@@ -3,6 +3,7 @@ jobs:
   build:
     working_directory: ~/dev3
     machine:
+      enable: true
       services:
         - redis
     docker:
@@ -14,6 +15,20 @@ jobs:
       - checkout
       - run: mix deps.get
       - run: mix test
-  test:
-    override:
-      - mix coveralls.circle
+    test:
+      override:
+        - mix coveralls.circle
+    dependencies:
+      pre:
+        - sudo service redis-server stop
+        - >
+          cd ~ && if [ ! -d "redis-3.2.5" ]; then
+            wget http://download.redis.io/releases/redis-3.2.5.tar.gz
+            tar xzf redis-3.2.5.tar.gz
+            cd redis-3.2.5 && make;
+          fi
+        - cd ~/redis-3.2.5 && sudo make install
+        - sudo sed -i 's/bin/local\/bin/g' /etc/init/redis-server.conf
+        - sudo service redis-server start
+      cache_directories:
+        - ~/redis-3.2.5
