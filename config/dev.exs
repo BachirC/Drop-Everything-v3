@@ -57,42 +57,4 @@ config :dev3, Dev3.Repo,
   hostname: "localhost",
   pool_size: 10
 
-config :dev3, Slack,
-  client_id: System.get_env("SLACK_CLIENT_ID"),
-  client_secret: System.get_env("SLACK_CLIENT_SECRET"),
-  verification_token: System.get_env("SLACK_VERIFICATION_TOKEN")
-
-config :dev3, GitHub,
-  client_id: System.get_env("GITHUB_CLIENT_ID"),
-  client_secret: System.get_env("GITHUB_CLIENT_SECRET"),
-  scope: System.get_env("GITHUB_SCOPE"),
-  webhook_events: ~w(issues issue_comment pull_request pull_request_review)a,
-  message_type_by_action: %{{"pull_request", "review_requested"} => :review_requested,
-                            {"pull_request_review", "submitted"} => :review_submitted,
-                            {"issues", "opened"}                 => :tagged_in_issue,
-                            {"issue_comment", "created"}         => :tagged_in_issue_comment}
-
 config :oauth2, debug: true
-
-config :dev3, :github_client, Dev3.GitHubClient.HTTPClient
-config :dev3, :slack_messenger, Dev3.SlackMessenger.HTTPClient
-config :dev3, :webhook_parser, Dev3.GitHub.WebhookParser.Real
-
-config :exq,
-  name: Exq,
-  host: "127.0.0.1",
-  port: 6379,
-  namespace: "exq",
-  concurrency: :infinite,
-  queues: ["slack_messages"],
-  poll_timeout: 50,
-  scheduler_poll_timeout: 200,
-  scheduler_enable: true,
-  max_retries: 1,
-  shutdown_timeout: 5000
-
-
-config :exq_ui,
-  web_port: 4050,
-  web_namespace: "",
-  server: true
