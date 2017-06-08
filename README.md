@@ -1,15 +1,28 @@
-# Dev3
+# Drop Everything (DEv3)
 
-To start your Phoenix server:
 
+## Overview
+
+DEv3 is a Slack app leveraging GitHub webhooks to notify you when you are mentioned on GitHub, being requested for a pull request review or when someone submits a review to one of your PRs. Other types of messages will be added in the future !
+
+- [Installation](https://bachirc.github.io/Drop-Everything-v3-web/index.html)
+- [Documentation](https://bachirc.github.io/Drop-Everything-v3-web/doc.html)
+
+
+## Dev environment
+
+### Phoenix setup
+  * Fork the repo
   * Install dependencies with `mix deps.get`
   * Create and migrate your database with `mix ecto.create && mix ecto.migrate`
   * Install Node.js dependencies with `cd assets && npm install`
-  * Start Phoenix endpoint with `mix phx.server`
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+### Create Slack and GitHub apps
 
-Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
+
+### Install ngrok (or other)
+
+
 
 ## Learn more
 
