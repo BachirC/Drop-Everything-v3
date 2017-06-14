@@ -60,6 +60,9 @@ Forwarding                    https://b2hfwe81.ngrok.io -> localhost:4000
 	- Command : `/watchr` and `/unwatchr` (Note : Avoid using `/watchrepos` and `/unwatchrepos` for naming the commands, they are reserved to DEv3 in production)
 	- Request URL : `https://b2hfwe81.ngrok.io/api/slack/slash_commands/watchrepos` and `https://b2hfwe81.ngrok.io/api/slack/slash_commands/unwatchrepos` (keep "watchrepos" and "unwatchrepos" in the URLs !)
 
+* Go to __Interactive Messages__ and set
+the Request URL to `https://b2hfwe81.ngrok.io/api/slack/message_interaction`
+
 ##### Phoenix app configuration
 
 * Set Slack environment variables in the `.env` file created previously. You can find them in the __Basic Information__ section :
