@@ -8,7 +8,6 @@ use Mix.Config
 # with brunch.io to recompile .js and .css sources.
 config :dev3, Dev3.Web.Endpoint,
   http: [port: 4000],
-  url: [scheme: "https", host: "bf628e6f.ngrok.io", port: "443"],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
