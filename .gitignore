@@ -34,7 +34,7 @@ npm-debug.log
 # ENV
 .env
 
-.iex.exs
+# .iex.exs
 
 # Prod
 domains
