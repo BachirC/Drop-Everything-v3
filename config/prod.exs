@@ -16,7 +16,7 @@ use Mix.Config
 config :dev3, Dev3.Web.Endpoint,
   on_init: {Dev3.Web.Endpoint, :load_from_system_env, []},
   http: [port: {:system, "PORT"}],
-  url: [scheme: "https", host: "api.dev3.bachirc.me", port: 443],
+  url: [host: "${HOST}", port: {:system, "PORT"}],
   # cache_static_manifest: "priv/static/cache_manifest.json",
   # configuration for Distillery release
   root: ".",
@@ -32,12 +32,15 @@ config :logger, level: :warn
 # to the previous section and set your `:url` port to 443:
 #
 config :dev3, Dev3.Web.Endpoint,
-  secret_key_base: System.get_env("SECRET_KEY_BASE")
+  secret_key_base: "${SECRET_KEY_BASE}"
 
 # Configure your database
 config :dev3, Dev3.Repo,
   adapter: Ecto.Adapters.Postgres,
-  url: {:system, "DATABASE_URL"},
+  hostname: "${DB_HOSTNAME}",
+  database: "${DB_NAME}",
+  username: "${DB_USER}",
+  password: "${DB_PASSWORD}",
   pool_size: 20
 #       ...
 #       url: [host: "example.com", port: 443],
