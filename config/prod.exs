@@ -37,10 +37,7 @@ config :dev3, Dev3.Web.Endpoint,
 # Configure your database
 config :dev3, Dev3.Repo,
   adapter: Ecto.Adapters.Postgres,
-  hostname: "${DB_HOSTNAME}",
-  database: "${DB_NAME}",
-  username: "${DB_USER}",
-  password: "${DB_PASSWORD}",
+  url: "${DB_URL}",
   pool_size: 20
 #       ...
 #       url: [host: "example.com", port: 443],

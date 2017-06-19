@@ -51,7 +51,7 @@ defmodule Dev3.Mixfile do
      {:excoveralls, "~> 0.6", only: :test},
      {:exq, "~> 0.8.6"},
      {:exq_ui, "~> 0.8.6"},
-     {:mix_docker, github: "Recruitee/mix_docker"}]
+     {:mix_docker, "~> 0.4.0"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.
