@@ -16,7 +16,7 @@ use Mix.Config
 config :dev3, Dev3.Web.Endpoint,
   on_init: {Dev3.Web.Endpoint, :load_from_system_env, []},
   http: [port: {:system, "PORT"}],
-  url: [host: "${HOST}", port: {:system, "PORT"}],
+  url: [host: {:system, "HOST"}, port: {:system, "PORT"}],
   # cache_static_manifest: "priv/static/cache_manifest.json",
   # configuration for Distillery release
   root: ".",
@@ -37,8 +37,24 @@ config :dev3, Dev3.Web.Endpoint,
 # Configure your database
 config :dev3, Dev3.Repo,
   adapter: Ecto.Adapters.Postgres,
-  url: "${DB_URL}",
-  pool_size: 20
+  username: System.get_env("DB_USER") || "${DB_USER}",
+  password: System.get_env("DB_PASSWORD") || "${DB_PASSWORD}",
+  database: System.get_env("DB_NAME") || "${DB_NAME}",
+  hostname:  System.get_env("DB_HOST") || "${DB_HOST}",
+  pool_size: 18
+
+config :exq,
+  name: Exq,
+  host: "redis",
+  port: 6379,
+  namespace: "exq",
+  concurrency: :infinite,
+  queues: ["slack_messages"],
+  poll_timeout: 50,
+  scheduler_poll_timeout: 200,
+  scheduler_enable: true,
+  max_retries: 1,
+  shutdown_timeout: 5000
 #       ...
 #       url: [host: "example.com", port: 443],
 #       https: [:inet6,
@@ -69,7 +85,6 @@ config :phoenix, :serve_endpoints, true
 #
 #     config :dev3, Dev3.Web.Endpoint, server: true
 #
-
 # Finally import the config/prod.secret.exs
 # which should be versioned separately.
 # import_config "prod.secret.exs"
