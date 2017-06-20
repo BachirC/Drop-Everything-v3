@@ -2,14 +2,18 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
   use Dev3.Web, :controller
   alias Dev3.User
   require Logger
+  import Dev3.Web.RateLimit
 
   action_fallback Dev3.Web.API.Slack.SlashCommandsFallbackController
+  @rate_limiter_conf Application.get_env(:dev3, :rate_limiter)
+  @slack_messenger Application.get_env(:dev3, :slack_messenger)
 
   plug :verify_token
   plug :assign_user
+  plug :rate_limit, [max_requests: @rate_limiter_conf[:max_requests],
+                     ignore: @rate_limiter_conf[:ignore],
+                     interval_seconds: @rate_limiter_conf[:interval_seconds]] when action in [:watch_repos, :unwatch_repos]
   plug :parse_args, "before commands with args" when action in [:watch_repos, :unwatch_repos]
-
-  @slack_messenger Application.get_env(:dev3, :slack_messenger)
 
   @doc """
     Endpoint for Slack /watchrepos command.
@@ -69,7 +73,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
   defp parse_args(%{params: %{"text" => args, "command" => command}} = conn, _) do
     case parse(args) do
       {:ok, parsed_args} -> assign(conn, :args, parsed_args)
-      :no_args_error -> handle_no_args_error(conn, command)
+      :no_args_error     -> handle_no_args_error(conn, command)
     end
   end
   defp parse_args(conn, _) do
@@ -80,10 +84,16 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     :no_args_error
   end
   defp parse(args), do: {:ok, String.split(args, " ")}
+  defp parse(args) when is_nil(args) or args == "", do: :no_args_error
+  defp parse(args), do: {:ok, args |> String.split(" ") |> limit_repos}
 
   defp handle_no_args_error(conn, command) do
     Logger.warn fn -> "[SlashCommands.NoArgsError user_id=#{conn.assigns[:user].id} command=#{command}] No args for slash command" end
     @slack_messenger.notify(:no_args_response, conn.assigns[:user], command)
     conn |> send_resp(:ok, "") |> halt
+  end
+
+  defp limit_repos(parsed_args) do
+    parsed_args |> Enum.take(@rate_limiter_conf[:max_repos_per_command])
   end
 end

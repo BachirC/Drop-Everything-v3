@@ -20,7 +20,7 @@ defmodule Dev3.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [mod: {Dev3.Application, []},
-     extra_applications: [:logger, :oauth2, :httpoison, :tentacat, :slack, :exq, :exq_ui]]
+     extra_applications: [:logger, :oauth2, :httpoison, :tentacat, :slack, :exq, :exq_ui, :ex_rated]]
   end
 
   # Specifies which paths to compile per environment.
@@ -51,7 +51,9 @@ defmodule Dev3.Mixfile do
      {:excoveralls, "~> 0.6", only: :test},
      {:exq, "~> 0.8.6"},
      {:exq_ui, "~> 0.8.6"},
-     {:mix_docker, "~> 0.4.0"}]
+     {:mix_docker, "~> 0.4.0"},
+     {:distillery, "~> 1.4"},
+     {:ex_rated, "~> 1.2"}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

@@ -41,17 +41,52 @@ defmodule Dev3.Web.API.Slack.SlashCommandsControllerTest do
       assert conn.halted
       assert conn.status == Plug.Conn.Status.code(:ok)
     end
+
+    test "Limits argument while parsing" do
+      user = insert_user()
+      max_repos = Application.get_env(:dev3, :rate_limiter)[:max_repos_per_command]
+      conn = build_valid_conn(:watch_repos,
+                              user,
+                              "/watchrepos",
+                              "John/elixir-lang Sara/ex-http-client Org/private-repo Paul/non-existant Jack/LeGentleMan Foo/Bar John/elixir-lang John/elixir-lang John/elixir-lang")
+
+      :timer.sleep(100)
+
+      expected_result = ~w{John/elixir-lang Sara/ex-http-client Org/private-repo Paul/non-existant Jack/LeGentleMan Foo/Bar John/elixir-lang John/elixir-lang John/elixir-lang} |> Enum.take(max_repos)
+      refute conn.halted
+      assert conn.assigns[:args] == expected_result
+    end
+
+    test 'rate limit' do
+      max_requests = Application.get_env(:dev3, :rate_limiter)[:max_requests]
+      ignore = Application.get_env(:dev3, :rate_limiter)[:ignore]
+      ignore_minus_1 = ignore - 1
+      interval_seconds = Application.get_env(:dev3, :rate_limiter)[:interval_seconds] * 1000
+      user = insert_user()
+
+      for n <- 1..ignore_minus_1, do: watch_repo_call(user)
+      :timer.sleep(100)
+
+      {count, remaining_count, _, _, _} = ExRated.inspect_bucket("#{user.id}:api/slack/slash_commands/watchrepos", interval_seconds, ignore)
+      assert count == ignore_minus_1
+      assert remaining_count == 1
+
+      conn = build_valid_conn(:watch_repos, user, "/watchrepos", "John/elixir-lang")
+      :timer.sleep(100)
+      assert conn.halted
+      assert conn.status == Plug.Conn.Status.code(:ok)
+      assert conn.resp_body == "Rate limit exceeded"
+      {count, remaining_count, _, _, _} = ExRated.inspect_bucket("#{user.id}:api/slack/slash_commands/watchrepos", interval_seconds, ignore)
+
+      assert count == ignore
+      assert remaining_count == 0
+    end
   end
 
   describe "/watchrepos" do
     test "success" do
       user = insert_user()
-      conn = build_valid_conn(:watch_repos,
-                              user,
-                              "/watchrepos",
-                              "John/elixir-lang Sara/ex-http-client Org/private-repo Paul/non-existant")
-
-      :timer.sleep(100)
+      conn = watch_repo_call(user)
 
       refute conn.halted
       assert conn.status == Plug.Conn.Status.code(:ok)
@@ -89,5 +124,14 @@ defmodule Dev3.Web.API.Slack.SlashCommandsControllerTest do
 
   defp insert_watched_repos(user) do
     Repo.insert!(%WatchedRepo{github_id: 1, full_name: "Josh/to-be-unwatched", user_id: user.id})
+  end
+
+  defp watch_repo_call(user) do
+    conn = build_valid_conn(:watch_repos,
+                            user,
+                            "/watchrepos",
+                            "John/elixir-lang Sara/ex-http-client Org/private-repo Paul/non-existant")
+    :timer.sleep(100)
+    conn
   end
 end
