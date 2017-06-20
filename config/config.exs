@@ -60,6 +60,12 @@ config :exq_ui,
   server: true
 
 config :mix_docker, image: "bachirc/gitbruh"
+config :dev3, :rate_limiter,
+  max_requests: 5,
+  ignore: 7,
+  interval_ms: 60_000,
+  max_repos_per_command: 5
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env}.exs"

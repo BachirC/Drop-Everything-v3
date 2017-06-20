@@ -1,5 +1,6 @@
 defmodule Dev3.Web.API.Slack.WebhookControllerTest do
   use Dev3.Web.ConnCase
+  use ExUnit.Case, async: true
   import Dev3.Web.Router.Helpers
 
   @webhook_events Application.get_env(:dev3, GitHub)[:webhook_events]

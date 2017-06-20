@@ -1,5 +1,5 @@
 defmodule Dev3.GitHub.WebhookParser.RealTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias Dev3.GitHub.WebhookParser.Real
   alias Dev3.Repo
   alias Dev3.User
