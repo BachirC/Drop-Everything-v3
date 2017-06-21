@@ -16,7 +16,7 @@ use Mix.Config
 config :dev3, Dev3.Web.Endpoint,
   on_init: {Dev3.Web.Endpoint, :load_from_system_env, []},
   http: [port: {:system, "PORT"}],
-  url: [host: {:system, "HOST"}, port: {:system, "PORT"}],
+  url: [host: {:system, "HOST"}, port: {:system, "URL_PORT"}],
   # cache_static_manifest: "priv/static/cache_manifest.json",
   # configuration for Distillery release
   root: ".",
