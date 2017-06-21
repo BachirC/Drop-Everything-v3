@@ -32,8 +32,7 @@ defmodule Dev3.SlackMessenger.MessageBuilder do
       text: "Snooze...",
       type: "select",
       options: [%{text: "For 1 hour", value: menu_option_value(data, 1)},
-                %{text: "Until tomorrow", value: menu_option_value(data, 2)},
-                %{text: "Now", value: menu_option_value(data, 3)}]}
+                %{text: "Until tomorrow", value: menu_option_value(data, 2)}]}
   end
 
   defp button_value(data) do

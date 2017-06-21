@@ -53,7 +53,6 @@ defmodule Dev3.SlackMessenger.MessageInteractionsParser do
     case selected_value do
       1 -> 1 * 3600
       2 -> 24 * 3600
-      3 -> 5
     end
   end
 
