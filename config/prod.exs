@@ -41,7 +41,7 @@ config :dev3, Dev3.Repo,
   password: System.get_env("DB_PASSWORD") || "${DB_PASSWORD}",
   database: System.get_env("DB_NAME") || "${DB_NAME}",
   hostname:  System.get_env("DB_HOST") || "${DB_HOST}",
-  pool_size: 18
+  pool_size: 20
 
 config :exq,
   name: Exq,
