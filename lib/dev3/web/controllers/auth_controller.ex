@@ -23,7 +23,7 @@ defmodule Dev3.Web.AuthController do
   end
 
   # The Slack authorize URL is embedded in the "Add to Slack" button in the homepage
-  defp authorize_url!(conn, %{"provider" => "slack"}), do: redirect conn, to: "/dev3.html"
+  defp authorize_url!(conn, %{"provider" => "slack"}), do: redirect conn, to: "/gitbruh.html"
   defp authorize_url!(conn, %{"provider" => "github", "user_id" => user_id}), do:
     redirect conn, external: GitHub.authorize_url!(state: user_id)
   defp authorize_url!(_, _), do: raise "Authorize : No matching provider available"
@@ -39,7 +39,7 @@ defmodule Dev3.Web.AuthController do
     with %{token: %{other_params: %{"scope" => _}}} = client <- GitHub.get_token!(code: code),
          github_user <- GitHub.get_user!(client),
          {:ok, %User{}} <- User.update(user_id, "github", to_github_user_fields(github_user)) do
-           redirect conn, to: "/dev3.html"
+           redirect conn, to: "/gitbruh.html"
     end
   end
 
