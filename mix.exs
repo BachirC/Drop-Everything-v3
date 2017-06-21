@@ -65,9 +65,4 @@ defmodule Dev3.Mixfile do
      "ecto.reset": ["ecto.drop", "ecto.setup"],
      "test": ["ecto.create --quiet", "ecto.migrate", "test"]]
   end
-
-  # Unix timestamp of the last commit.
-  defp committed_at do
-    System.cmd("git", ~w[log -1 --date=short --pretty=format:%ct]) |> elem(0)
-  end
 end
