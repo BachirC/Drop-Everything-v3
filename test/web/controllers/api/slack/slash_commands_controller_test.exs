@@ -15,7 +15,6 @@ defmodule Dev3.Web.API.Slack.SlashCommandsControllerTest do
 
       assert conn.halted
       assert conn.status == Plug.Conn.Status.code(:ok)
-      assert conn.resp_body == "Invalid token"
     end
 
     test "halt connection when user not found" do
@@ -27,7 +26,6 @@ defmodule Dev3.Web.API.Slack.SlashCommandsControllerTest do
 
       assert conn.halted
       assert conn.status == Plug.Conn.Status.code(:ok)
-      assert conn.resp_body == "User not found"
     end
 
     test "halt connection when no args given" do
@@ -42,7 +40,6 @@ defmodule Dev3.Web.API.Slack.SlashCommandsControllerTest do
 
       assert conn.halted
       assert conn.status == Plug.Conn.Status.code(:ok)
-      assert conn.resp_body == "Args parsing error"
     end
   end
 
@@ -58,7 +55,6 @@ defmodule Dev3.Web.API.Slack.SlashCommandsControllerTest do
 
       refute conn.halted
       assert conn.status == Plug.Conn.Status.code(:ok)
-      assert conn.resp_body == "/watchrepos successful"
       assert Repo.aggregate(WatchedRepo, :count, :id) == 3
     end
   end
@@ -73,7 +69,6 @@ defmodule Dev3.Web.API.Slack.SlashCommandsControllerTest do
 
       refute conn.halted
       assert conn.status == Plug.Conn.Status.code(:ok)
-      assert conn.resp_body == "/unwatchrepos successful"
       assert Repo.aggregate(WatchedRepo, :count, :id) == 0
     end
   end

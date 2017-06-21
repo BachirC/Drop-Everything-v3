@@ -7,7 +7,9 @@ config :dev3, Dev3.Web.Endpoint,
   server: false
 
 # Print only warnings and errors during test
-config :logger, level: :warn
+config :logger,
+  level: :error,
+  compile_time_purge_level: :error
 
 # Configure your database
 config :dev3, Dev3.Repo,

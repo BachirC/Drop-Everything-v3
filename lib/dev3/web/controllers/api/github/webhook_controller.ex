@@ -1,5 +1,6 @@
 defmodule Dev3.Web.API.GitHub.WebhookController do
   use Dev3.Web, :controller
+  require Logger
 
   action_fallback Dev3.Web.API.GitHub.WebhookFallbackController
 
@@ -9,7 +10,7 @@ defmodule Dev3.Web.API.GitHub.WebhookController do
 
   def webhook(%{assigns: %{message_type: message_type}} = conn, params) do
     Dev3.Tasks.WebhookHandler.start(message_type, params)
-    send_resp(conn, :ok, "Messages sent !")
+    send_resp(conn, :ok, "")
   end
 
   defp dispatch_by_action(conn, _) do
@@ -22,7 +23,7 @@ defmodule Dev3.Web.API.GitHub.WebhookController do
     if message_type do
       conn |> assign(:message_type, message_type)
     else
-      conn |> send_resp(:ok, "Invalid {event: '#{event}', action: '#{action}'}") |> halt
+      conn |> send_resp(:ok, "") |> halt
     end
   end
 end

@@ -12,7 +12,6 @@ defmodule Dev3.Web.API.Slack.WebhookControllerTest do
 
     assert conn.halted
     assert conn.status == Plug.Conn.Status.code(:ok)
-    assert conn.resp_body == "Invalid {event: 'unhandled_event', action: 'handled_or_not'}"
   end
 
   test "halt connection when action not handled" do
@@ -23,7 +22,6 @@ defmodule Dev3.Web.API.Slack.WebhookControllerTest do
 
     assert conn.halted
     assert conn.status == Plug.Conn.Status.code(:ok)
-    assert conn.resp_body == "Invalid {event: '#{event}', action: 'unhandled_action_for_sure'}"
   end
 
   test "Notify users when event/action handled" do
@@ -37,6 +35,5 @@ defmodule Dev3.Web.API.Slack.WebhookControllerTest do
 
     refute conn.halted
     assert conn.status == Plug.Conn.Status.code(:ok)
-    assert conn.resp_body == "Messages sent !"
   end
 end

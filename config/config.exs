@@ -25,14 +25,14 @@ config :logger, :console,
 config :dev3, :bot_username, "DEv3"
 
 config :dev3, Slack,
-  client_id: "${SLACK_CLIENT_ID}",
-  client_secret: "${SLACK_CLIENT_SECRET}",
-  verification_token: "${SLACK_VERIFICATION_TOKEN}"
+  client_id: System.get_env("SLACK_CLIENT_ID") || "${SLACK_CLIENT_ID}",
+  client_secret: System.get_env("SLACK_CLIENT_SECRET") || "${SLACK_CLIENT_SECRET}",
+  verification_token: System.get_env("SLACK_VERIFICATION_TOKEN") || "${SLACK_VERIFICATION_TOKEN}"
 
 config :dev3, GitHub,
-  client_id: "${GITHUB_CLIENT_ID}",
-  client_secret: "${GITHUB_CLIENT_SECRET}",
-  scope: "${GITHUB_SCOPE}",
+  client_id: System.get_env("GITHUB_CLIENT_ID") || "${GITHUB_CLIENT_ID}",
+  client_secret: System.get_env("GITHUB_CLIENT_SECRET") || "${GITHUB_CLIENT_SECRET}",
+  scope: System.get_env("GITHUB_SCOPE") || "${GITHUB_SCOPE}",
   webhook_events: ~w(issues issue_comment pull_request pull_request_review)a,
   message_type_by_action: %{{"pull_request", "review_requested"} => :review_requested,
                             {"pull_request_review", "submitted"} => :review_submitted,

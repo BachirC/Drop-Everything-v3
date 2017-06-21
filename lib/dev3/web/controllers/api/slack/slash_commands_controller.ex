@@ -1,6 +1,7 @@
 defmodule Dev3.Web.API.Slack.SlashCommandsController do
   use Dev3.Web, :controller
   alias Dev3.User
+  require Logger
 
   action_fallback Dev3.Web.API.Slack.SlashCommandsFallbackController
 
@@ -24,7 +25,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
   """
   def watch_repos(conn, _params) do
     Dev3.Tasks.WatchReposHandler.start(conn.assigns)
-    send_resp(conn, :ok, "/watchrepos successful")
+    send_resp(conn, :ok, "")
   end
 
   @doc """
@@ -35,29 +36,34 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
   """
   def unwatch_repos(conn, _params) do
     Dev3.Tasks.UnwatchReposHandler.start(conn.assigns)
-    send_resp(conn, :ok, "/unwatchrepos successful")
+    send_resp(conn, :ok, "")
   end
 
   defp verify_token(%{params: %{"token" => token}} = conn, _) do
     if token == Application.get_env(:dev3, Slack)[:verification_token] do
       conn
     else
+      body = conn.body_params
+      Logger.error fn -> "[SlashCommands.InvalidSlackVerificationTokenError slack_user_id=#{body["user_id"]} slack_team_id=#{body["team_id"]}] Invalid verification token" end
       conn |> send_resp(:ok, "") |> halt
     end
   end
   defp verify_token(conn, _) do
-    conn |> send_resp(:ok, "Invalid token") |> halt
+    Logger.error fn -> "[SlashCommands.InvalidSlackVerificationTokenError] Invalid verification token" end
+    conn |> send_resp(:ok, "") |> halt
   end
 
   defp assign_user(%{params: %{"team_id" => team_id, "user_id" => user_id}} = conn, _) do
     if user = User.retrieve_with_slack(%{slack_team_id: team_id, slack_user_id: user_id}) do
       conn |> assign(:user, user)
     else
-      conn |> send_resp(:ok, "User not found") |> halt
+      Logger.error fn -> "[SlashCommands.SlackUserNotFoundError slack_user_id=#{user_id} slack_team_id=#{team_id}] User not found" end
+      conn |> send_resp(:ok, "") |> halt
     end
   end
   defp assign_user(conn, _) do
-    conn |> send_resp(:ok, "User not found") |> halt
+    Logger.error fn -> "[SlashCommands.SlackUserNotFoundError] User not found" end
+    conn |> send_resp(:ok, "") |> halt
   end
 
   defp parse_args(%{params: %{"text" => args, "command" => command}} = conn, _) do
@@ -67,14 +73,17 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
     end
   end
   defp parse_args(conn, _) do
-    conn |> send_resp(:ok, "Args parsing error") |> halt
+    conn |> send_resp(:ok, "") |> halt
   end
 
-  defp parse(args) when is_nil(args) or args == "", do: :no_args_error
+  defp parse(args) when is_nil(args) or args == "" do
+    :no_args_error
+  end
   defp parse(args), do: {:ok, String.split(args, " ")}
 
   defp handle_no_args_error(conn, command) do
+    Logger.warn fn -> "[SlashCommands.NoArgsError user_id=#{conn.assigns[:user].id} command=#{command}] No args for slash command" end
     @slack_messenger.notify(:no_args_response, conn.assigns[:user], command)
-    conn |> send_resp(:ok, "Args parsing error") |> halt
+    conn |> send_resp(:ok, "") |> halt
   end
 end

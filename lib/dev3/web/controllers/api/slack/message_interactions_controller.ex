@@ -1,6 +1,7 @@
 defmodule Dev3.Web.API.Slack.MessageInteractionsController do
   use Dev3.Web, :controller
   alias Dev3.User
+  require Logger
 
   plug :parse_params
   plug :verify_token
@@ -24,7 +25,11 @@ defmodule Dev3.Web.API.Slack.MessageInteractionsController do
     if conn.assigns[:params]["token"] == Application.get_env(:dev3, Slack)[:verification_token] do
       conn
     else
-      conn |> send_resp(:ok, "Invalid token") |> halt
+      body = conn.assigns.params
+      action = body["actions"] |> List.first() |> Map.get("name")
+      Logger.error fn -> "[MessageInteractions.InvalidSlackVerificationTokenError \
+action=#{action} slack_user_id=#{body["user"]["id"]} slack_team_id=#{body["team"]["id"]}] Invalid verification token" end
+      conn |> send_resp(:ok, "") |> halt
     end
   end
 
@@ -32,10 +37,13 @@ defmodule Dev3.Web.API.Slack.MessageInteractionsController do
     if user = User.retrieve_with_slack(%{slack_team_id: team["id"], slack_user_id: slack_user["id"]}) do
       conn |> assign(:user, user)
     else
-      conn |> send_resp(:ok, "User not found") |> halt
+      Logger.error fn -> "[MessageInteractions.SlackUserNotFoundError slack_user_id=#{slack_user["id"]} \
+slack_team_id=#{team["id"]}] User not found" end
+      conn |> send_resp(:ok, "") |> halt
     end
   end
   defp assign_user(conn, _) do
-    conn |> send_resp(:ok, "User not found") |> halt
+    Logger.error fn -> "[MessageInteractions.SlackUserNotFoundError] User not found" end
+    conn |> send_resp(:ok, "") |> halt
   end
 end
