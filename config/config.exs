@@ -22,7 +22,7 @@ config :logger, :console,
   format: "$time $metadata[$level] $message\n",
   metadata: [:request_id]
 
-config :dev3, :bot_username, "DEv3"
+config :dev3, :bot_username, "GitBruh"
 
 config :dev3, Slack,
   client_id: System.get_env("SLACK_CLIENT_ID") || "${SLACK_CLIENT_ID}",
