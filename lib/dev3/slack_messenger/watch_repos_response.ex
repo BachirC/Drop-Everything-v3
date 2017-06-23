@@ -5,7 +5,7 @@ defmodule Dev3.SlackMessenger.HTTPClient.WatchReposResponse do
 
   @behaviour Dev3.SlackMessenger.HTTPClient
 
-  @statuses ~w(not_found no_rights noop created)a
+  @statuses ~w(not_found no_rights success)a
 
   def build_message(data) do
     %{text: "", attachments: build_attachments(data)}
@@ -22,11 +22,12 @@ defmodule Dev3.SlackMessenger.HTTPClient.WatchReposResponse do
   defp attachments(:not_found, repos) do
     %{
       title: """
-       These repos have not been found. Either it's a mistyping error or these repos are\
-       private and you need to give DEv3 access to them\
-       (<https://help.github.com/articles/requesting-organization-approval-for-your-authorized-applications|See GitHub Documentation>)
+       :no_entry_sign: GitBruh cannot watch these repos at the moment. Make sure you have granted GitBruh access to them\
+       (<https://help.github.com/articles/requesting-organization-approval-for-your-authorized-applications|See GitHub doc>).\
+       Once access is granted, you will need to re-issue /watchrepos.
       """,
       text: "· " <> Enum.join(repos, "\n· "),
+      mrkdwn_in: ["title"],
       color: "#ef0e02"
     }
   end
@@ -34,24 +35,17 @@ defmodule Dev3.SlackMessenger.HTTPClient.WatchReposResponse do
   defp attachments(:no_rights, repos) do
     %{
       title: """
-       Repos newly watched, you don't have enough permissions to add a webhook to the following repos.
-       To start receiving messages for these repos, make sure a GitHub webhook is set for DEv3\
-       (How to add DEv3 webhook on GitHub)
+      :hourglass_flowing_sand: You started watching these repos but you don't have enough permissions to add a webhook to them. \
+      The next step is to ask an owner to add the webhook by issuing /watchrepos or <https://bachirc.github.io/Drop-Everything-v3-web/#Add-webhook-manually|manually>. \
+      Once the webhook is added, you are good to go ! No need to re-issue /watchrepos.
       """,
       text: "· " <> Enum.join(repos, "\n· "),
       color: "#ed8a00"
     }
   end
-  defp attachments(:noop, repos) do
+  defp attachments(:success, repos) do
     %{
-      title: "Repos newly watched, a GitHub webhook already exists for the following repos",
-      text: "· " <> Enum.join(repos, "\n· "),
-      color: "#0000B7"
-    }
-  end
-  defp attachments(:created, repos) do
-    %{
-      title: "Repos newly watched, a GitHub webhook pointing to DEv3 has been added to the following repos",
+      title: ":thumbsup: You are now watching these repos ! You will start receiving messages related to them.",
       text: "· " <> Enum.join(repos, "\n· "),
       color: "#09c600"
     }

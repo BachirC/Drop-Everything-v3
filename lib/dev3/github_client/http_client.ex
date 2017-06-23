@@ -46,8 +46,8 @@ defmodule Dev3.GitHubClient.HTTPClient do
     [owner, name] = String.split(repo.full_name, "/")
 
     case Tentacat.Hooks.create(owner, name, body, client) do
-      {201, _} -> [:created, repo]
-      {422, %{"errors" => [%{"message" => msg}]}} -> [:noop, repo]
+      {201, _} -> [:success, repo]
+      {422, %{"errors" => [%{"message" => msg}]}} -> [:success, repo]
       {404, _} -> [:no_rights, repo]
       {_, _} -> [:unknown_error, repo]
     end
