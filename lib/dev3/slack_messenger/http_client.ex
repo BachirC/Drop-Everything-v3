@@ -27,6 +27,7 @@ defmodule Dev3.SlackMessenger.HTTPClient do
   @message_type_modules %{watch_repos_response:    WatchReposResponse,
                           unwatch_repos_response:  UnwatchReposResponse,
                           no_args_response:        NoArgsResponse,
+                          welcome_message:         WelcomeMessage,
                           review_requested:        ReviewRequested,
                           review_submitted:        ReviewSubmitted,
                           tagged_in_issue:         TaggedInIssue,

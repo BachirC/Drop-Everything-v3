@@ -8,6 +8,8 @@ defmodule Dev3.Web.AuthController do
 
   action_fallback Dev3.Web.AuthFallbackController
 
+  @slack_messenger Application.get_env(:dev3, :slack_messenger)
+
   @doc """
     Handles redirection to the provider Authorization URL
   """
@@ -38,7 +40,8 @@ defmodule Dev3.Web.AuthController do
   defp handle_callback(conn, %{"provider" => "github", "code" => code, "state" => user_id}) do
     with %{token: %{other_params: %{"scope" => _}}} = client <- GitHub.get_token!(code: code),
          github_user <- GitHub.get_user!(client),
-         {:ok, %User{}} <- User.update(user_id, "github", to_github_user_fields(github_user)) do
+         {:ok, %User{} = user} <- User.update(user_id, "github", to_github_user_fields(github_user)) do
+           @slack_messenger.notify(:welcome_message, user, [])
            redirect conn, to: "/gitbruh.html"
     end
   end
