@@ -5,7 +5,7 @@ defmodule Dev3.SlackMessenger.HTTPClient.ReviewSubmitted do
 
   import Dev3.SlackMessenger.MessageBuilder
 
-  @status_emojis %{approved:          ":white_check_mark:",
+  @status_emojis %{approved:          ":thumbsup:",
                    commented:         ":thinking_face:",
                    changes_requested: ":x:"}
 

@@ -19,7 +19,7 @@ defmodule Dev3.SlackMessenger.HTTPClient.TaggedInIssueComment do
   end
 
   def base_attachment(data) do
-    %{title: "You have been mentioned · #{humanize(data.issue.type)} ##{data.issue.number} · #{data.issue.title}",
+    %{title: ":speech_balloon: You have been mentioned · #{humanize(data.issue.type)} ##{data.issue.number} · #{data.issue.title}",
      title_link: data.comment.url,
      author_name: data.sender.name,
      author_icon: data.sender.avatar_url,

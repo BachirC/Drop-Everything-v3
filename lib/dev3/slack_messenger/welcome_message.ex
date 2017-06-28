@@ -22,7 +22,7 @@ defmodule Dev3.SlackMessenger.HTTPClient.WelcomeMessage do
         Don't hesitate to open an issue if an idea comes up, something weird happens, or simply to ask a question !
 
         :warning: A cleanup of all data might occur at the end of the beta phase, all user accounts,\
-        watched repos, webhooks and other user info *will be lost*. Sorry for the inconvenience.
+        watched repos, and other user info *will be lost*. Sorry for the inconvenience.
       """,
       color: "#ff0000"
     },

@@ -21,7 +21,7 @@ defmodule Dev3.SlackMessenger.HTTPClient.ReviewRequested do
   end
 
   defp base_attachment(data) do
-    %{title: "Review requested · Pull request ##{data.issue.number} · #{data.issue.title} · #{data.branches.head} -> #{data.branches.base}",
+    %{title: ":memo: Review requested · Pull request ##{data.issue.number} · #{data.issue.title} · #{data.branches.head} -> #{data.branches.base}",
      title_link: data.issue.url,
      author_name: data.sender.name,
      author_icon: data.sender.avatar_url,
