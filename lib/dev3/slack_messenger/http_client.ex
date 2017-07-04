@@ -31,7 +31,8 @@ defmodule Dev3.SlackMessenger.HTTPClient do
                           review_requested:        ReviewRequested,
                           review_submitted:        ReviewSubmitted,
                           tagged_in_issue:         TaggedInIssue,
-                          tagged_in_issue_comment: TaggedInIssueComment}
+                          tagged_in_issue_comment: TaggedInIssueComment,
+                          rate_limit_exceeded:     RateLimitExceededResponse}
 
   @message_types Map.keys(@message_type_modules)
 

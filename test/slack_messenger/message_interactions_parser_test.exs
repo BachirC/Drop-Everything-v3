@@ -1,5 +1,5 @@
 defmodule Dev3.SlackMessenger.MessageInteractionsParserTest do
-  use ExUnit.Case
+  use ExUnit.Case, async: true
   alias Dev3.Repo
   alias Dev3.User
   alias Dev3.GitHub.WatchedRepo
