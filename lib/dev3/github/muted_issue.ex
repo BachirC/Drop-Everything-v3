@@ -21,7 +21,7 @@ defmodule Dev3.GitHub.MutedIssue do
   def unmute(params) do
     issue = Repo.get_by(__MODULE__, %{user_id: params["user_id"], github_id: params["github_id"]})
 
-    Repo.delete(issue)
+    if issue, do: Repo.delete(issue)
   end
 
   def mute(params) do
