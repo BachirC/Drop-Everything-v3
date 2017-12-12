@@ -31,7 +31,10 @@ defmodule Dev3.User do
   def list_by_github_id(github_id) do
     query = from u in __MODULE__,
             where: u.github_id == ^github_id,
-            select: %{id: u.id, slack_team_id: u.slack_team_id, slack_user_id: u.slack_user_id}
+            select: %{id: u.id,
+                      slack_team_id: u.slack_team_id,
+                      slack_user_id: u.slack_user_id,
+                      github_user_id: u.github_user_id}
 
     Repo.all(query)
   end

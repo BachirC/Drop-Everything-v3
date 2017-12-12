@@ -10,22 +10,24 @@ defmodule Dev3.GitHub.WebhookParser.Real do
   alias Dev3.GitHub.MutedIssue
 
   def parse(:review_requested, params) do
+    data = parse_issue(params)
     users = fetch_recipients(params["requested_reviewer"]["id"],
                              params["repository"]["id"],
                              params["pull_request"]["id"])
-    data = parse_issue(params)
 
     {:ok, users, data}
   end
   def parse(:review_submitted, %{"review" => review} = params) do
-    users = fetch_recipients(params["pull_request"]["user"]["id"],
-                             params["repository"]["id"],
-                             params["pull_request"]["id"])
     data = params
            |> parse_issue()
            |> Map.merge(%{review: %{state: String.to_atom(review["state"]),
                                     url: review["html_url"],
                                     body: review["body"]}})
+
+    users = fetch_recipients(params["pull_request"]["user"]["id"],
+                             params["repository"]["id"],
+                             params["pull_request"]["id"])
+            |> avoid_self_messaging(data.sender)
 
     {:ok, users, data}
   end
@@ -65,6 +67,11 @@ defmodule Dev3.GitHub.WebhookParser.Real do
     |> extract_github_user_ids()
     |> User.list_by_github_user_ids()
     |> filter_issue_watchers(repo_id, issue_id)
+  end
+
+  defp avoid_self_messaging([], sender), do: []
+  defp avoid_self_messaging(recipients, sender) do
+    if sender.name == List.first(recipients).github_user_id, do: [], else: recipients
   end
 
   defp extract_github_user_ids(body) do

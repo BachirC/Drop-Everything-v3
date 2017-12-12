@@ -15,13 +15,13 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
   end
 
   test "review_requested" do
-    user = Repo.insert!(%User{github_id: 1, slack_team_id: "ST1", slack_user_id: "SU1", slack_access_token: "SAT1"})
+    user = Repo.insert!(%User{github_id: 1, github_user_id: "Baxter", slack_team_id: "ST1", slack_user_id: "SU1", slack_access_token: "SAT1"})
     insert_watched_repo(user)
     payload = Path.expand("../../fixtures/github_api/webhooks/pull_request/review_requested.json", __DIR__)
               |> File.read!()
               |> Poison.decode!()
     expected = {:ok,
-      [Map.take(user, [:id, :slack_team_id, :slack_user_id])],
+      [Map.take(user, [:id, :slack_team_id, :slack_user_id, :github_user_id])],
       %{branches: %{base: "master", head: "changes"},
         issue: %{body: "This is a pretty simple change that we need to pull into master.",
                 id: 34778301,
@@ -41,14 +41,44 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
     assert res == expected
   end
 
+  test "no auto-messaging on review submitted" do
+    user = Repo.insert!(%User{github_id: 6752317, github_user_id: "baxterthehacker", slack_team_id: "ST1", slack_user_id: "SU1", slack_access_token: "SAT1"})
+    insert_watched_repo(user)
+    payload = Path.expand("../../fixtures/github_api/webhooks/pull_request_review/auto_review.json", __DIR__)
+              |> File.read!()
+              |> Poison.decode!()
+    expected = {:ok,
+                [],
+                %{branches: %{base: "master", head: "patch-2"},
+                  issue: %{body: "Just a few more details",
+                          id: 87811438,
+                          number: 8,
+                          title: "Add a README description",
+                          type: :pull_request,
+                          url: "https://github.com/baxterthehacker/public-repo/pull/8"},
+                  owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"},
+                  repo: %{id: 35129377,
+                          name: "baxterthehacker/public-repo",
+                          url: "https://github.com/baxterthehacker/public-repo"},
+                  sender: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3",
+                            name: "baxterthehacker"},
+                  review: %{body: "Looks great!",
+                            state: :approved,
+                            url: "https://github.com/baxterthehacker/public-repo/pull/8#pullrequestreview-2626884"}}}
+
+    res = Real.parse(:review_submitted, payload)
+
+    assert res == expected
+  end
+
   test "review_submitted" do
-    user = Repo.insert!(%User{github_id: 2546, slack_team_id: "ST1", slack_user_id: "SU1", slack_access_token: "SAT1"})
+    user = Repo.insert!(%User{github_id: 2546, github_user_id: "Joe", slack_team_id: "ST1", slack_user_id: "SU1", slack_access_token: "SAT1"})
     insert_watched_repo(user)
     payload = Path.expand("../../fixtures/github_api/webhooks/pull_request_review/submitted.json", __DIR__)
               |> File.read!()
               |> Poison.decode!()
     expected = {:ok,
-                [Map.take(user, [:id, :slack_team_id, :slack_user_id])],
+                [Map.take(user, [:id, :slack_team_id, :slack_user_id, :github_user_id])],
                 %{branches: %{base: "master", head: "patch-2"},
                   issue: %{body: "Just a few more details",
                           id: 87811438,
