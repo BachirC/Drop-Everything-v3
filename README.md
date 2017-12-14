@@ -1,14 +1,13 @@
-# Drop Everything (DEv3)
+# GitBruh (Formerly Drop Everything)
 
 
 ## Overview
 
-DEv3 is a Slack app leveraging GitHub webhooks to notify you when you are mentioned on GitHub, being requested for a pull request review or when someone submits a review to one of your PRs. It also gives you the ability to choose which GitHub repos to watch, mute issues (or pull requests) and snooze messages.
+GitBruh is a Slack app leveraging GitHub webhooks to notify you when you are mentioned on GitHub, being requested for a pull request review or when someone submits a review to one of your PRs. It also gives you the ability to choose which GitHub repos to watch, mute issues (or pull requests) and snooze messages.
 
 Other types of messages will be added in the future !
 
-- Installation (Not available yet)
-- [Documentation](https://bachirc.github.io/Drop-Everything-v3-web/doc.html)
+[Documentation](https://bachirc.github.io/Drop-Everything-v3-web)
 
 ## Set up dev environment
 
