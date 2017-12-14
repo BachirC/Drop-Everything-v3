@@ -24,15 +24,16 @@ defmodule Dev3.SlackMessenger.HTTPClient do
 
   @bot_username Application.get_env(:dev3, :bot_username)
 
-  @message_type_modules %{watch_repos_response:    WatchReposResponse,
-                          unwatch_repos_response:  UnwatchReposResponse,
-                          no_args_response:        NoArgsResponse,
-                          welcome_message:         WelcomeMessage,
-                          review_requested:        ReviewRequested,
-                          review_submitted:        ReviewSubmitted,
-                          tagged_in_issue:         TaggedInIssue,
-                          tagged_in_issue_comment: TaggedInIssueComment,
-                          rate_limit_exceeded:     RateLimitExceededResponse}
+  @message_type_modules %{watch_repos_response:          WatchReposResponse,
+                          unwatch_repos_response:        UnwatchReposResponse,
+                          no_args_response:              NoArgsResponse,
+                          welcome_message:               WelcomeMessage,
+                          review_requested:              ReviewRequested,
+                          review_submitted:              ReviewSubmitted,
+                          tagged_in_issue:               TaggedInIssue,
+                          tagged_in_issue_comment:       TaggedInIssueComment,
+                          rate_limit_exceeded:           RateLimitExceededResponse,
+                          notify_owner_on_issue_comment: NotifyOwnerOnIssueComment}
 
   @message_types Map.keys(@message_type_modules)
 

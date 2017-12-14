@@ -19,12 +19,12 @@ defmodule Dev3.SlackMessenger.HTTPClient.TaggedInIssue do
   end
 
   defp base_attachment(data) do
-    %{title: "You have been mentioned · #{humanize(data.issue.type)} ##{data.issue.number} · #{data.issue.title}",
+    %{title: ":wave: You have been mentioned · #{humanize(data.issue.type)} ##{data.issue.number} · #{data.issue.title}",
      title_link: data.issue.url,
      author_name: data.sender.name,
      author_icon: data.sender.avatar_url,
      footer: data.repo.name,
-     footer_icon: data.owner.avatar_url,
+     footer_icon: data.repo.owner.avatar_url,
      color: "#a7c7f9",
      callback_id: "issue_actions",
      actions: []}

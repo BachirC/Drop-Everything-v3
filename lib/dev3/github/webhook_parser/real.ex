@@ -9,11 +9,22 @@ defmodule Dev3.GitHub.WebhookParser.Real do
   alias Dev3.GitHub.WatchedRepo
   alias Dev3.GitHub.MutedIssue
 
+  def parse(:notify_owner_on_issue_comment, %{"comment" => comment} = params) do
+    data = params
+           |> parse_issue()
+           |> Map.merge(%{comment: %{url: comment["html_url"], body: comment["body"]}})
+
+    users = fetch_recipients(data.issue.owner.id,
+                             data.repo.id,
+                             data.issue.id)
+            |> avoid_self_messaging(data.sender)
+    {:ok, users, data}
+  end
   def parse(:review_requested, params) do
     data = parse_issue(params)
     users = fetch_recipients(params["requested_reviewer"]["id"],
-                             params["repository"]["id"],
-                             params["pull_request"]["id"])
+                             data.repo.id,
+                             data.issue.id)
 
     {:ok, users, data}
   end
@@ -24,28 +35,28 @@ defmodule Dev3.GitHub.WebhookParser.Real do
                                     url: review["html_url"],
                                     body: review["body"]}})
 
-    users = fetch_recipients(params["pull_request"]["user"]["id"],
-                             params["repository"]["id"],
-                             params["pull_request"]["id"])
+    users = fetch_recipients(data.issue.owner.id,
+                             data.repo.id,
+                             data.issue.id)
             |> avoid_self_messaging(data.sender)
 
     {:ok, users, data}
   end
   def parse(:tagged_in_issue, params) do
-    users = fetch_tagged_users(params["issue"]["body"],
-                               params["repository"]["id"],
-                               params["issue"]["id"])
     data = parse_issue(params)
+    users = fetch_tagged_users(data.issue.body,
+                               data.repo.id,
+                               data.issue.id)
 
     {:ok, users, data}
   end
   def parse(:tagged_in_issue_comment, %{"comment" => comment} = params) do
-    users = fetch_tagged_users(comment["body"],
-                               params["repository"]["id"],
-                               params["issue"]["id"])
     data = params
            |> parse_issue()
            |> Map.merge(%{comment: %{url: comment["html_url"], body: comment["body"]}})
+    users = fetch_tagged_users(data.comment.body,
+                               data.repo.id,
+                               data.issue.id)
 
     {:ok, users, data}
   end
@@ -114,16 +125,23 @@ defmodule Dev3.GitHub.WebhookParser.Real do
       "title" => issue_title,
       "body" => issue_body} = issue
 
-    owner_avatar_url = params["repository"]["owner"]["avatar_url"]
+
+    %{"id" => owner_id} = parse_owner(params)
+    repo_owner_avatar_url = params["repository"]["owner"]["avatar_url"]
 
     %{issue: %{id: issue_id,
                type: issue_type,
                number: issue_number,
                url: issue_url,
                title: issue_title,
-               body: issue_body},
+               body: issue_body,
+               owner: %{id: owner_id}},
       sender: %{name: sender_name, avatar_url: sender_avatar_url},
-      repo: %{id: repo_id, name: repo_name, url: repo_url},
-      owner: %{avatar_url: owner_avatar_url}}
+      repo: %{id: repo_id, name: repo_name, url: repo_url, owner: %{avatar_url: repo_owner_avatar_url}}
+      }
+  end
+
+  defp parse_owner(params) do
+    get_in(params, ["issue", "user"]) || get_in(params, ["pull_request", "user"])
   end
 end

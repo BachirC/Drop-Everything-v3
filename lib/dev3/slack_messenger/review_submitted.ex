@@ -41,7 +41,7 @@ defmodule Dev3.SlackMessenger.HTTPClient.ReviewSubmitted do
      author_name: data.sender.name,
      author_icon: data.sender.avatar_url,
      footer: data.repo.name,
-     footer_icon: data.owner.avatar_url,
+     footer_icon: data.repo.owner.avatar_url,
      color: "#366bc1",
      callback_id: "issue_actions",
      actions: []}

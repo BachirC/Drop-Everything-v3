@@ -6,10 +6,11 @@ defmodule Dev3.Web.API.GitHub.WebhookController do
 
   plug :dispatch_by_action
 
-  @message_type_by_action Application.get_env(:dev3, GitHub)[:message_type_by_action]
+  @message_types_by_action Application.get_env(:dev3, GitHub)[:message_types_by_action]
 
-  def webhook(%{assigns: %{message_type: message_type}} = conn, params) do
-    Dev3.Tasks.WebhookHandler.start(message_type, params)
+  def webhook(%{assigns: %{message_types: message_types}} = conn, params) do
+    message_types
+    |> Enum.each(fn message_type -> Dev3.Tasks.WebhookHandler.start(message_type, params) end)
     send_resp(conn, :ok, "")
   end
 
@@ -18,10 +19,10 @@ defmodule Dev3.Web.API.GitHub.WebhookController do
             |> get_req_header("x-github-event")
             |> Enum.fetch!(0)
     action = conn.params["action"]
-    message_type = @message_type_by_action[{event, action}]
+    message_types = @message_types_by_action[{event, action}]
 
-    if message_type do
-      conn |> assign(:message_type, message_type)
+    if message_types do
+      conn |> assign(:message_types, message_types)
     else
       conn |> send_resp(:ok, "") |> halt
     end

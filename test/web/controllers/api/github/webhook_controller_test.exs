@@ -4,7 +4,7 @@ defmodule Dev3.Web.API.Slack.WebhookControllerTest do
   import Dev3.Web.Router.Helpers
 
   @webhook_events Application.get_env(:dev3, GitHub)[:webhook_events]
-  @message_type_by_action Application.get_env(:dev3, GitHub)[:message_type_by_action]
+  @message_types_by_action Application.get_env(:dev3, GitHub)[:message_types_by_action]
 
   test "halt connection when event not handled" do
     conn = build_conn()
@@ -26,7 +26,7 @@ defmodule Dev3.Web.API.Slack.WebhookControllerTest do
   end
 
   test "Notify users when event/action handled" do
-    {event, action} = @message_type_by_action
+    {event, action} = @message_types_by_action
                       |> Map.keys()
                       |> List.first()
 

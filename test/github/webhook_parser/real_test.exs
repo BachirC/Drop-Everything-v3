@@ -14,8 +14,37 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
     assert Real.parse(:action_not_handled, %{}) == {:unhandled_message_type, :action_not_handled}
   end
 
+  test "notify_owner_on_issue_comment" do
+    user = Repo.insert!(%User{github_id: 1234, github_user_id: "John", slack_team_id: "ST1", slack_user_id: "SU1", slack_access_token: "SAT1"})
+    insert_watched_repo(user)
+    payload = Path.expand("../../fixtures/github_api/webhooks/issue_comment/created.json", __DIR__)
+              |> File.read!()
+              |> Poison.decode!()
+    expected = {:ok,
+                [Map.take(user, [:id, :slack_team_id, :slack_user_id, :github_user_id])],
+                %{issue: %{body: "It looks like you accidently spelled 'commit' with two 't's.",
+                          id: 73464126,
+                          number: 2,
+                          title: "Spelling error in the README file",
+                          type: :issue,
+                          url: "https://github.com/baxterthehacker/public-repo/issues/2",
+                          owner: %{id: 1234}},
+                  repo: %{id: 35129377,
+                          name: "baxterthehacker/public-repo",
+                          url: "https://github.com/baxterthehacker/public-repo",
+                          owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"}},
+                  sender: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3",
+                            name: "baxterthehacker"},
+                  comment: %{url: "https://github.com/baxterthehacker/public-repo/issues/2#issuecomment-99262140",
+                             body: "You have been tagged @BachirC"}}}
+
+    res = Real.parse(:notify_owner_on_issue_comment, payload)
+
+    assert res == expected
+  end
+
   test "review_requested" do
-    user = Repo.insert!(%User{github_id: 1, github_user_id: "Baxter", slack_team_id: "ST1", slack_user_id: "SU1", slack_access_token: "SAT1"})
+    user = Repo.insert!(%User{github_id: 1, github_user_id: "darkvador", slack_team_id: "ST1", slack_user_id: "SU1", slack_access_token: "SAT1"})
     insert_watched_repo(user)
     payload = Path.expand("../../fixtures/github_api/webhooks/pull_request/review_requested.json", __DIR__)
               |> File.read!()
@@ -28,11 +57,12 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
                 number: 1,
                 title: "Update the README with new information",
                 type: :pull_request,
-                url: "https://github.com/baxterthehacker/public-repo/pull/1"},
-        owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"},
+                url: "https://github.com/baxterthehacker/public-repo/pull/1",
+                owner: %{id: 6752317}},
         repo: %{id: 35129377,
                 name: "baxterthehacker/public-repo",
-                url: "https://github.com/baxterthehacker/public-repo"},
+                url: "https://github.com/baxterthehacker/public-repo",
+                owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"}},
         sender: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3",
                   name: "baxterthehacker"}}}
 
@@ -55,11 +85,12 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
                           number: 8,
                           title: "Add a README description",
                           type: :pull_request,
-                          url: "https://github.com/baxterthehacker/public-repo/pull/8"},
-                  owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"},
+                          url: "https://github.com/baxterthehacker/public-repo/pull/8",
+                          owner: %{id: 6752317}},
                   repo: %{id: 35129377,
                           name: "baxterthehacker/public-repo",
-                          url: "https://github.com/baxterthehacker/public-repo"},
+                          url: "https://github.com/baxterthehacker/public-repo",
+                          owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"}},
                   sender: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3",
                             name: "baxterthehacker"},
                   review: %{body: "Looks great!",
@@ -85,11 +116,12 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
                           number: 8,
                           title: "Add a README description",
                           type: :pull_request,
-                          url: "https://github.com/baxterthehacker/public-repo/pull/8"},
-                  owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"},
+                          url: "https://github.com/baxterthehacker/public-repo/pull/8",
+                          owner: %{id: 2546}},
                   repo: %{id: 35129377,
                           name: "baxterthehacker/public-repo",
-                          url: "https://github.com/baxterthehacker/public-repo"},
+                          url: "https://github.com/baxterthehacker/public-repo",
+                  owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"}},
                   sender: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3",
                             name: "baxterthehacker"},
                   review: %{body: "Looks great!",
@@ -114,11 +146,12 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
                           number: 2,
                           title: "Spelling error in the README file",
                           type: :issue,
-                          url: "https://github.com/baxterthehacker/public-repo/issues/2"},
-                  owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"},
+                          url: "https://github.com/baxterthehacker/public-repo/issues/2",
+                          owner: %{id: 6752317}},
                   repo: %{id: 35129377,
                           name: "baxterthehacker/public-repo",
-                          url: "https://github.com/baxterthehacker/public-repo"},
+                          url: "https://github.com/baxterthehacker/public-repo",
+                          owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"}},
                   sender: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3",
                             name: "baxterthehacker"}}}
 
@@ -140,11 +173,12 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
                           number: 2,
                           title: "Spelling error in the README file",
                           type: :issue,
-                          url: "https://github.com/baxterthehacker/public-repo/issues/2"},
-                  owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"},
+                          url: "https://github.com/baxterthehacker/public-repo/issues/2",
+                          owner: %{id: 1234}},
                   repo: %{id: 35129377,
                           name: "baxterthehacker/public-repo",
-                          url: "https://github.com/baxterthehacker/public-repo"},
+                          url: "https://github.com/baxterthehacker/public-repo",
+                          owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"}},
                   sender: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3",
                             name: "baxterthehacker"},
                   comment: %{url: "https://github.com/baxterthehacker/public-repo/issues/2#issuecomment-99262140",
@@ -167,11 +201,12 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
                           number: 2,
                           title: "Spelling error in the README file",
                           type: :issue,
-                          url: "https://github.com/baxterthehacker/public-repo/issues/2"},
-                  owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"},
+                          url: "https://github.com/baxterthehacker/public-repo/issues/2",
+                          owner: %{id: 1234}},
                   repo: %{id: 35129377,
                           name: "baxterthehacker/public-repo",
-                          url: "https://github.com/baxterthehacker/public-repo"},
+                          url: "https://github.com/baxterthehacker/public-repo",
+                          owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"}},
                   sender: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3",
                             name: "baxterthehacker"},
                   comment: %{url: "https://github.com/baxterthehacker/public-repo/issues/2#issuecomment-99262140",
@@ -196,11 +231,12 @@ defmodule Dev3.GitHub.WebhookParser.RealTest do
                           number: 2,
                           title: "Spelling error in the README file",
                           type: :issue,
-                          url: "https://github.com/baxterthehacker/public-repo/issues/2"},
-                  owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"},
+                          url: "https://github.com/baxterthehacker/public-repo/issues/2",
+                          owner: %{id: 1234}},
                   repo: %{id: 35129377,
                           name: "baxterthehacker/public-repo",
-                          url: "https://github.com/baxterthehacker/public-repo"},
+                          url: "https://github.com/baxterthehacker/public-repo",
+                          owner: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3"}},
                   sender: %{avatar_url: "https://avatars.githubusercontent.com/u/6752317?v=3",
                             name: "baxterthehacker"},
                   comment: %{url: "https://github.com/baxterthehacker/public-repo/issues/2#issuecomment-99262140",
