@@ -10,7 +10,7 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
 
   plug :verify_token
   plug :assign_user
-  plug :rate_limit, @rate_limiter_conf when action in [:watch_repos, :unwatch_repos]
+  plug :rate_limit, @rate_limiter_conf when action in [:watch_repos, :unwatch_repos, :list_repos]
   plug :parse_args, "before commands with args" when action in [:watch_repos, :unwatch_repos]
 
   @doc """
@@ -38,6 +38,16 @@ defmodule Dev3.Web.API.Slack.SlashCommandsController do
   """
   def unwatch_repos(conn, _params) do
     Dev3.Tasks.UnwatchReposHandler.start(conn.assigns)
+    send_resp(conn, :ok, "")
+  end
+
+  @doc """
+    Endpoint for Slack /listrepos command.
+    The command doesn't take any arguments.
+    It shows the list of watched repos.
+  """
+  def list_repos(conn, _params) do
+    Dev3.Tasks.ListReposHandler.start(conn.assigns)
     send_resp(conn, :ok, "")
   end
 

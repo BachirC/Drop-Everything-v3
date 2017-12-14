@@ -33,7 +33,8 @@ defmodule Dev3.SlackMessenger.HTTPClient do
                           tagged_in_issue:               TaggedInIssue,
                           tagged_in_issue_comment:       TaggedInIssueComment,
                           rate_limit_exceeded:           RateLimitExceededResponse,
-                          notify_owner_on_issue_comment: NotifyOwnerOnIssueComment}
+                          notify_owner_on_issue_comment: NotifyOwnerOnIssueComment,
+                          listrepos_response:            ListreposResponse}
 
   @message_types Map.keys(@message_type_modules)
 

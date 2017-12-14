@@ -107,6 +107,16 @@ defmodule Dev3.Web.API.Slack.SlashCommandsControllerTest do
     end
   end
 
+  describe "/listrepos" do
+    test "success" do
+      user = insert_user()
+      insert_watched_repos(user)
+      conn = build_valid_conn(:list_repos, user, "/listrepos", "")
+      refute conn.halted
+      assert conn.status == Plug.Conn.Status.code(:ok)
+    end
+  end
+
   defp build_valid_conn(action, user, command, text) do
     post build_conn(),
       slash_commands_path(Dev3.Web.Endpoint, action),
