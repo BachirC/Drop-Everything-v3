@@ -1,4 +1,8 @@
 defmodule Dev3.SlackMessenger.MessageBuilder do
+  @moduledoc """
+    Defines common building blocks for messages
+  """
+
   def add_action(attachment, action, data) do
     Map.update(attachment,
                :actions,

@@ -14,17 +14,15 @@ defmodule Dev3.GitHub.WebhookParser.Real do
            |> parse_issue()
            |> Map.merge(%{comment: %{url: comment["html_url"], body: comment["body"]}})
 
-    users = fetch_recipients(data.issue.owner.id,
-                             data.repo.id,
-                             data.issue.id)
+    users = data.issue.owner.id
+            |> fetch_recipients(data.repo.id, data.issue.id)
             |> avoid_self_messaging(data.sender)
+
     {:ok, users, data}
   end
   def parse(:review_requested, params) do
     data = parse_issue(params)
-    users = fetch_recipients(params["requested_reviewer"]["id"],
-                             data.repo.id,
-                             data.issue.id)
+    users = fetch_recipients(params["requested_reviewer"]["id"], data.repo.id, data.issue.id)
 
     {:ok, users, data}
   end
@@ -35,9 +33,8 @@ defmodule Dev3.GitHub.WebhookParser.Real do
                                     url: review["html_url"],
                                     body: review["body"]}})
 
-    users = fetch_recipients(data.issue.owner.id,
-                             data.repo.id,
-                             data.issue.id)
+    users = data.issue.owner.id
+            |> fetch_recipients(data.repo.id, data.issue.id)
             |> avoid_self_messaging(data.sender)
 
     {:ok, users, data}

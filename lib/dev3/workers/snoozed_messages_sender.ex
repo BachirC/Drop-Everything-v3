@@ -1,4 +1,8 @@
 defmodule Dev3.Workers.SnoozedMessagesSender do
+  @moduledoc """
+    Sends snoozed messages
+  """
+
   @slack_messenger Application.get_env(:dev3, :slack_messenger)
 
   alias Dev3.Repo

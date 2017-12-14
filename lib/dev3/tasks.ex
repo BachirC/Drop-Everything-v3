@@ -1,4 +1,6 @@
 defmodule Dev3.Release.Tasks do
+  @moduledoc false
+
   def migrate do
     {:ok, _} = Application.ensure_all_started(:dev3)
 
