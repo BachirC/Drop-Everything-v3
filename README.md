@@ -7,8 +7,7 @@ DEv3 is a Slack app leveraging GitHub webhooks to notify you when you are mentio
 
 Other types of messages will be added in the future !
 
-- Installation (Not available yet)
-- [Documentation](https://bachirc.github.io/Drop-Everything-v3-web/doc.html)
+[Documentation](https://bachirc.github.io/Drop-Everything-v3-web)
 
 ## Set up dev environment
 
