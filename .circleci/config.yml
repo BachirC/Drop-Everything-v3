@@ -2,33 +2,29 @@ version: 2
 jobs:
   build:
     working_directory: ~/dev3
-    machine:
-      enable: true
-      services:
-        - redis
     docker:
-      - image: trenpixster/elixir:1.4.1
+      - image: elixir:1.5.0
+      - image: bachirc/gitbruh:1.2.0
+        environment:
+          - MIX_ENV=test
+          - HOST=api.gitbruh.bachirc.me
+          - DB_USER=gitbruh
+          - DB_NAME=gitbruh_db
+          - DB_HOST=pg
+          - PORT=4000
+        command: foreground
       - image: postgres:9.5
         environment:
-          POSTGRES_USER: postgres
+          - POSTGRES_DB=gitbruh_db
+          - POSTGRES_USER=gitbruh
+          - POSTGRES_HOST=localhost
+      - image: redis
+        command: redis-server --appendonly yes
     steps:
       - checkout
-      - run: mix deps.get
+      - run: mix local.hex --force
+      - run: mix local.rebar
+      - run: mix do deps.get, compile
+      - run: mix ecto.create && mix ecto.migrate
+      - run: mix phoenix.digest
       - run: mix test
-    test:
-      override:
-        - mix coveralls.circle
-    dependencies:
-      pre:
-        - sudo service redis-server stop
-        - >
-          cd ~ && if [ ! -d "redis-3.2.5" ]; then
-            wget http://download.redis.io/releases/redis-3.2.5.tar.gz
-            tar xzf redis-3.2.5.tar.gz
-            cd redis-3.2.5 && make;
-          fi
-        - cd ~/redis-3.2.5 && sudo make install
-        - sudo sed -i 's/bin/local\/bin/g' /etc/init/redis-server.conf
-        - sudo service redis-server start
-      cache_directories:
-        - ~/redis-3.2.5
