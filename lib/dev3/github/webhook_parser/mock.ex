@@ -5,7 +5,9 @@ defmodule Dev3.GitHub.WebhookParser.Mock do
 
   @behaviour Dev3.GitHub.WebhookParser
 
-  @message_types Map.values(Application.get_env(:dev3, GitHub)[:message_types_by_action])
+  @message_types Application.get_env(:dev3, GitHub)[:message_types_by_action]
+                 |> Map.values()
+                 |> List.flatten
   def parse(message_type, _params) when message_type in @message_types do
     {:ok, [], %{}}
   end
