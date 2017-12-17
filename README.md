@@ -1,5 +1,6 @@
-# GitBruh (Formerly Drop Everything)
+[![CircleCI](https://circleci.com/gh/BachirC/Drop-Everything-v3.svg?style=svg)](https://circleci.com/gh/BachirC/Drop-Everything-v3)
 
+# GitBruh (Formerly Drop Everything) 
 
 ## Overview
 
